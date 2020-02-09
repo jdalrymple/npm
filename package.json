@@ -9,6 +9,7 @@
     "execa": "^4.0.0",
     "fs-extra": "^8.1.0",
     "globby": "^11.0.0",
+    "jest": "^25.1.0",
     "load-json-file": "^6.2.0",
     "lodash": "^4.17.15",
     "nerf-dart": "^1.0.0",
@@ -23,7 +24,14 @@
     "@rollup/plugin-json": "^4.0.2",
     "codecov": "^3.6.5",
     "rollup": "^1.31.0",
-    "rollup-plugin-terser": "^5.2.0"
+    "rollup-plugin-terser": "^5.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-jest": "^23.6.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
   },
   "engines": {
     "node": ">=10.18"
@@ -49,6 +57,9 @@
     "url": "https://github.com/jdalrymple/semantic-release-mnpm.git"
   },
   "scripts": {
-    "build": "rollup -c -w",
+    "build": "rollup -c",
+    "test": "jest test/unit",
+    "lint": "prettier --check '{src,test}/**/*.js' && eslint '{src,test}/**/*/*.js'",
+    "lint:fix": "prettier --write '{src,test}/**/*.js' && eslint '{src,test}/**/*/*.js' --fix"
   }
 }

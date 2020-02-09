@@ -10,18 +10,12 @@ async function updatePkgVersion(npmrc, basePath, { env, stdout, stderr, version,
     ['version', version, '--userconfig', npmrc, '--no-git-tag-version', '--allow-same-version'],
     {
       cwd: basePath,
-      env
-    }
+      env,
+    },
   );
 
-  versionResult.stdout.pipe(
-    stdout,
-    { end: false }
-  );
-  versionResult.stderr.pipe(
-    stderr,
-    { end: false }
-  );
+  versionResult.stdout.pipe(stdout, { end: false });
+  versionResult.stderr.pipe(stderr, { end: false });
 
   await versionResult;
 }
@@ -31,17 +25,11 @@ async function createTarball(npmrc, basePath, { cwd, env, stdout, stderr, versio
 
   const packResult = execa('npm', ['pack', basePath, '--userconfig', npmrc], {
     cwd,
-    env
+    env,
   });
 
-  packResult.stdout.pipe(
-    stdout,
-    { end: false }
-  );
-  packResult.stderr.pipe(
-    stderr,
-    { end: false }
-  );
+  packResult.stdout.pipe(stdout, { end: false });
+  packResult.stderr.pipe(stderr, { end: false });
 
   const tarball = (await packResult).stdout.split('\n').pop();
   const tarballSource = path.resolve(cwd, tarball);
@@ -54,10 +42,21 @@ async function createTarball(npmrc, basePath, { cwd, env, stdout, stderr, versio
   }
 }
 
-export async function prepareNpm(npmrc, { pkgRoot, tarballDir }, { cwd, env, stdout, stderr, nextRelease: { version }, logger }, isPrivate=false) {
+export async function prepareNpm(
+  npmrc,
+  { pkgRoot, tarballDir },
+  { cwd, env, stdout, stderr, nextRelease: { version }, logger },
+  isPrivate = false,
+) {
   const basePath = pkgRoot ? path.resolve(cwd, pkgRoot) : cwd;
 
-  await updatePkgVersion(npmrc, basePath, { env, stdout, stderr, version, logger });
+  await updatePkgVersion(npmrc, basePath, {
+    env,
+    stdout,
+    stderr,
+    version,
+    logger,
+  });
 
   if (tarballDir && isPrivate !== true) {
     await createTarball(npmrc, basePath, {
@@ -66,7 +65,7 @@ export async function prepareNpm(npmrc, { pkgRoot, tarballDir }, { cwd, env, std
       stdout,
       stderr,
       version,
-      logger
+      logger,
     });
   }
 }

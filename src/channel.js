@@ -1,9 +1,11 @@
 import execa from 'execa';
-import { getRegistry, getReleasesInfo } from './npm-utils';
 import { validRange } from 'semver';
+import { getRegistry, getReleasesInfo } from './npm-utils';
 
 export function getChannel(channel) {
-  return channel ? (validRange(channel) ? `release-${channel}` : channel) : 'latest';
+  if (!channel) return 'latest';
+
+  return validRange(channel) ? `release-${channel}` : channel;
 }
 
 export async function addNpmChannel(npmrc, { npmPublish }, context, pkgJson) {
@@ -13,14 +15,14 @@ export async function addNpmChannel(npmrc, { npmPublish }, context, pkgJson) {
     stdout,
     stderr,
     nextRelease: { version, channel },
-    logger
+    logger,
   } = context;
 
-  if (npmPublish === false || pkgJson.private == true) {
+  if (npmPublish === false || pkgJson.private === true) {
     logger.log(
       `Skip adding to npm channel as ${
         npmPublish === false ? 'npmPublish' : "package.json's private property"
-      } is ${npmPublish !== false}`
+      } is ${npmPublish !== false}`,
     );
 
     return false;
@@ -33,25 +35,28 @@ export async function addNpmChannel(npmrc, { npmPublish }, context, pkgJson) {
 
   const result = execa(
     'npm',
-    ['dist-tag', 'add', `${pkgJson.name}@${version}`, distTag, '--userconfig', npmrc, '--registry', registry],
+    [
+      'dist-tag',
+      'add',
+      `${pkgJson.name}@${version}`,
+      distTag,
+      '--userconfig',
+      npmrc,
+      '--registry',
+      registry,
+    ],
     {
       cwd,
-      env
-    }
+      env,
+    },
   );
 
-  result.stdout.pipe(
-    stdout,
-    { end: false }
-  );
-  result.stderr.pipe(
-    stderr,
-    { end: false }
-  );
+  result.stdout.pipe(stdout, { end: false });
+  result.stderr.pipe(stderr, { end: false });
 
   await result;
 
   logger.log(`Added ${pkgJson.name}@${version} to dist-tag @${distTag} on ${registry}`);
 
-  return getReleaseInfo(pkgJson, context, distTag, registry);
+  return getReleasesInfo(pkgJson, context, distTag, registry);
 }

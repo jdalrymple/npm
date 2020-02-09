@@ -12,40 +12,46 @@ import { getError } from './error';
 // Set the environment variable `LEGACY_TOKEN` when user use the legacy auth, so it can be resolved by npm CLI
 function setLegacyToken({ env }) {
   if (env.NPM_USERNAME && env.NPM_PASSWORD && env.NPM_EMAIL) {
-    env.LEGACY_TOKEN = Buffer.from(`${env.NPM_USERNAME}:${env.NPM_PASSWORD}`, 'utf8').toString('base64');
+    env.LEGACY_TOKEN = Buffer.from(`${env.NPM_USERNAME}:${env.NPM_PASSWORD}`, 'utf8').toString(
+      'base64',
+    );
   }
 }
 
 async function setAuth(
   npmrc,
   registry,
-  { cwd, env: { NPM_TOKEN, NPM_CONFIG_USERCONFIG, NPM_USERNAME, NPM_PASSWORD, NPM_EMAIL }, logger }
+  { cwd, env: { NPM_TOKEN, NPM_CONFIG_USERCONFIG, NPM_USERNAME, NPM_PASSWORD, NPM_EMAIL }, logger },
 ) {
   logger.log('Verify authentication for registry %s', registry);
 
   const { configs, ...rcConfig } = rc(
     'npm',
     { registry: 'https://registry.npmjs.org/' },
-    { config: NPM_CONFIG_USERCONFIG || path.resolve(cwd, '.npmrc') }
+    { config: NPM_CONFIG_USERCONFIG || path.resolve(cwd, '.npmrc') },
   );
 
   if (configs) logger.log('Reading npm config from %s', configs.join(', '));
 
-  const currentConfig = configs ? (await Promise.all(configs.map(config => readFile(config)))).join('\n') : '';
+  const currentConfig = configs
+    ? (await Promise.all(configs.map(config => readFile(config)))).join('\n')
+    : '';
 
   if (getAuthToken(registry, { npmrc: rcConfig })) return outputFile(npmrc, currentConfig);
 
   if (NPM_USERNAME && NPM_PASSWORD && NPM_EMAIL) {
     await outputFile(
       npmrc,
-      `${currentConfig ? `${currentConfig}\n` : ''}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`
+      `${currentConfig ? `${currentConfig}\n` : ''}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`,
     );
 
     logger.log(`Wrote NPM_USERNAME, NPM_PASSWORD and NPM_EMAIL to ${npmrc}`);
   } else if (NPM_TOKEN) {
     await outputFile(
       npmrc,
-      `${currentConfig ? `${currentConfig}\n` : ''}${nerfDart(registry)}:_authToken = \${NPM_TOKEN}`
+      `${currentConfig ? `${currentConfig}\n` : ''}${nerfDart(
+        registry,
+      )}:_authToken = \${NPM_TOKEN}`,
     );
 
     logger.log(`Wrote NPM_TOKEN to ${npmrc}`);
@@ -58,7 +64,7 @@ export function getReleasesInfo(
   { name },
   { env: { DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/' }, nextRelease: { version } },
   distTag,
-  registry
+  registry,
 ) {
   return {
     name: `npm package (@${distTag} dist-tag)`,
@@ -66,7 +72,7 @@ export function getReleasesInfo(
       normalizeUrl(registry) === normalizeUrl(DEFAULT_NPM_REGISTRY)
         ? `https://www.npmjs.com/package/${name}/v/${version}`
         : undefined,
-    channel: distTag
+    channel: distTag,
   };
 }
 
@@ -76,7 +82,11 @@ export function getRegistry({ publishConfig: { registry } = {}, name }, { cwd, e
     env.NPM_CONFIG_REGISTRY ||
     getRegistryUrl(
       name.split('/')[0],
-      rc('npm', { registry: 'https://registry.npmjs.org/' }, { config: path.resolve(cwd, '.npmrc') })
+      rc(
+        'npm',
+        { registry: 'https://registry.npmjs.org/' },
+        { config: path.resolve(cwd, '.npmrc') },
+      ),
     )
   );
 }
@@ -86,7 +96,7 @@ export async function verifyNpmAuth(npmrc, pkg, context) {
     cwd,
     env: { DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/', ...env },
     stdout,
-    stderr
+    stderr,
   } = context;
   const registry = getRegistry(pkg, context);
 
@@ -97,16 +107,13 @@ export async function verifyNpmAuth(npmrc, pkg, context) {
 
   if (normalizeUrl(registry) === normalizeUrl(DEFAULT_NPM_REGISTRY)) {
     try {
-      const whoamiResult = execa('npm', ['whoami', '--userconfig', npmrc, '--registry', registry], { cwd, env });
+      const whoamiResult = execa('npm', ['whoami', '--userconfig', npmrc, '--registry', registry], {
+        cwd,
+        env,
+      });
 
-      whoamiResult.stdout.pipe(
-        stdout,
-        { end: false }
-      );
-      whoamiResult.stderr.pipe(
-        stderr,
-        { end: false }
-      );
+      whoamiResult.stdout.pipe(stdout, { end: false });
+      whoamiResult.stderr.pipe(stderr, { end: false });
 
       await whoamiResult;
     } catch (e) {
@@ -116,13 +123,13 @@ export async function verifyNpmAuth(npmrc, pkg, context) {
 }
 
 export function summarizeReleasesInfo(releasesInfo) {
-  const urls = releasesInfo.filter(i=> i === false).map(i => i.url);
+  const urls = releasesInfo.filter(i => i === false).map(i => i.url);
 
   if (urls.length === 0) return false;
-  
-  return ({
+
+  return {
     name: releasesInfo[0].name,
     urls: urls,
-    channel: releasesInfo[0].channel
-  });
+    channel: releasesInfo[0].channel,
+  };
 }

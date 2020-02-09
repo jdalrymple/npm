@@ -10,14 +10,14 @@ export async function publishNpm(npmrc, { npmPublish, pkgRoot }, context, pkgJso
     stdout,
     stderr,
     nextRelease: { version, channel },
-    logger
+    logger,
   } = context;
 
   if (npmPublish === false || pkgJson.private == true) {
     logger.log(
       `Skip publishing to npm registry as ${
         npmPublish === false ? 'npmPublish' : "package.json's private property"
-      } is ${npmPublish !== false}`
+      } is ${npmPublish !== false}`,
     );
 
     return false;
@@ -27,22 +27,18 @@ export async function publishNpm(npmrc, { npmPublish, pkgRoot }, context, pkgJso
   const registry = getRegistry(pkgJson, context);
   const distTag = getChannel(channel);
 
-  logger.log(`Publishing ${pkgJson.name} version ${version} to npm registry on dist-tag ${distTag}`);
+  logger.log(
+    `Publishing ${pkgJson.name} version ${version} to npm registry on dist-tag ${distTag}`,
+  );
 
   const result = execa(
     'npm',
     ['publish', basePath, '--userconfig', npmrc, '--tag', distTag, '--registry', registry],
-    { cwd, env }
+    { cwd, env },
   );
 
-  result.stdout.pipe(
-    stdout,
-    { end: false }
-  );
-  result.stderr.pipe(
-    stderr,
-    { end: false }
-  );
+  result.stdout.pipe(stdout, { end: false });
+  result.stderr.pipe(stderr, { end: false });
 
   await result;
 

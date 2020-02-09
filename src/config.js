@@ -6,18 +6,16 @@ function validate({ npmPublish, tarballDir, pkgRoot }) {
   const VALIDATORS = {
     npmPublish: isBoolean,
     tarballDir: isNonEmptyString,
-    pkgRoot: isNonEmptyString
+    pkgRoot: isNonEmptyString,
   };
 
-  const errors = Object.entries({ npmPublish, tarballDir, pkgRoot }).reduce(
+  return Object.entries({ npmPublish, tarballDir, pkgRoot }).reduce(
     (errors, [option, value]) =>
       !isNil(value) && !VALIDATORS[option](value)
         ? [...errors, getError(`EINVALID${option.toUpperCase()}`, { [option]: value })]
         : errors,
-    []
+    [],
   );
-
-  if (errors.length > 0) throw new AggregateError(errors);
 }
 
 /**
@@ -60,11 +58,15 @@ function validate({ npmPublish, tarballDir, pkgRoot }) {
  * }],
  */
 export async function verifyPluginConfig(pluginConfig) {
+  const errors = [];
+
   if (pluginConfig.default) {
-    Object.values(pluginConfig).forEach(c => validate(c));
+    Object.values(pluginConfig).forEach(c => errors.push(...validate(c)));
   } else {
-    validate(pluginConfig);
+    errors.push(...validate(pluginConfig));
   }
+
+  if (errors.length > 0) throw new AggregateError(errors);
 
   return true;
 }

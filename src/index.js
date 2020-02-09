@@ -29,10 +29,12 @@ export async function prepare(pluginConfig, context) {
   // TODO: Adjust this to handle independant versioning
   await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
-      const config = pluginConfig.default ? pluginConfig[p.name] || pluginConfig.default : pluginConfig;
+      const config = pluginConfig.default
+        ? pluginConfig[p.name] || pluginConfig.default
+        : pluginConfig;
 
       return prepareNpm(npmrc, config, { ...context, cwd: p.path }, p.private);
-    })
+    }),
   );
 
   prepared = true;
@@ -45,10 +47,12 @@ export async function publish(pluginConfig, context) {
 
   const releaseInfo = await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
-      const config = pluginConfig.default ? pluginConfig[p.name] || pluginConfig.default : pluginConfig;
+      const config = pluginConfig.default
+        ? pluginConfig[p.name] || pluginConfig.default
+        : pluginConfig;
 
       return publishNpm(npmrc, config, { ...context, cwd: p.path }, p);
-    })
+    }),
   );
 
   return summarizeReleasesInfo(releaseInfo);
@@ -59,10 +63,12 @@ export async function addChannel(pluginConfig, context) {
 
   const releaseInfo = await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
-      const config = pluginConfig.default ? pluginConfig[p.name] || pluginConfig.default : pluginConfig;
+      const config = pluginConfig.default
+        ? pluginConfig[p.name] || pluginConfig.default
+        : pluginConfig;
 
       return addChannelNpm(npmrc, config, { ...context, cwd: p.path }, p);
-    })
+    }),
   );
 
   return summarizeReleasesInfo(releaseInfo);
