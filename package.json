@@ -2,7 +2,7 @@
   "name": "semantic-release-mnpm",
   "description": "semantic-release plugin to publish a npm package that supports monorepos",
   "homepage": "https://github.com/jdalrymple/semantic-release-mnpm#readme",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "dependencies": {
     "@semantic-release/error": "^2.2.0",
     "aggregate-error": "^3.0.1",
@@ -21,17 +21,21 @@
     "tempy": "^0.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "@rollup/plugin-json": "^4.0.2",
+    "babel-jest": "^25.1.0",
     "codecov": "^3.6.5",
-    "rollup": "^1.31.0",
-    "rollup-plugin-terser": "^5.2.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-jest": "^23.6.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "rollup": "^1.31.0",
+    "rollup-plugin-terser": "^5.2.0",
+    "stream-buffers": "^3.0.2"
   },
   "engines": {
     "node": ">=10.18"

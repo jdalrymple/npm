@@ -1,55 +1,60 @@
-// const path = require("path");
-// const test = require("ava");
-// const {
-//   outputJson,
-//   readJson,
-//   outputFile,
-//   readFile,
-//   pathExists,
-//   appendFile
-// } = require("fs-extra");
-// const tempy = require("tempy");
-// const execa = require("execa");
-// const { stub } = require("sinon");
-// const { WritableStreamBuffer } = require("stream-buffers");
-// const prepare = require("../lib/prepare");
+import path from 'path';
+import { outputJson, readJson, remove } from 'fs-extra';
+import { directory as createDir, file as createFile } from 'tempy';
+import { WritableStreamBuffer } from 'stream-buffers';
+import { prepareNpm } from '../../src/prepare';
 
-// test.beforeEach(t => {
-//   t.context.log = stub();
-//   t.context.logger = { log: t.context.log };
-//   t.context.stdout = new WritableStreamBuffer();
-//   t.context.stderr = new WritableStreamBuffer();
-// });
+let context;
+let tempDir;
+let tempNpmrc;
 
-// test("Updade package.json", async t => {
-//   const cwd = tempy.directory();
-//   const npmrc = tempy.file({ name: ".npmrc" });
-//   const packagePath = path.resolve(cwd, "package.json");
-//   await outputJson(packagePath, { version: "0.0.0-dev" });
+beforeEach(async () => {
+  tempDir = await createDir();
+  tempNpmrc = await createFile({ name: '.npmrc' });
 
-//   await prepare(
-//     npmrc,
-//     {},
-//     {
-//       cwd,
-//       env: {},
-//       stdout: t.context.stdout,
-//       stderr: t.context.stderr,
-//       nextRelease: { version: "1.0.0" },
-//       logger: t.context.logger
-//     }
-//   );
+  context = {};
+  context.log = jest.fn();
+  context.logger = { log: context.log };
+  context.stdout = new WritableStreamBuffer();
+  context.stderr = new WritableStreamBuffer();
+});
 
-//   // Verify package.json has been updated
-//   t.is((await readJson(packagePath)).version, "1.0.0");
+afterEach(async () => {
+  await remove(tempDir);
+  await remove(tempNpmrc);
+});
 
-//   // Verify the logger has been called with the version updated
-//   t.deepEqual(t.context.log.args[0], [
-//     "Write version %s to package.json in %s",
-//     "1.0.0",
-//     cwd
-//   ]);
-// });
+describe('prepare.prepareNpm in a single package repository', () => {
+  it('should Updade package.json', async () => {
+    const packagePath = path.resolve(tempDir, 'package.json');
+    await outputJson(packagePath, { version: '0.0.0-dev' });
+
+    await prepareNpm(
+      tempNpmrc,
+      {},
+      {
+        cwd: tempDir,
+        env: {},
+        stdout: context.stdout,
+        stderr: context.stderr,
+        nextRelease: { version: '1.0.0' },
+        logger: context.logger,
+      },
+    );
+
+    const json = await readJson(packagePath);
+
+    // Verify package.json has been updated
+    expect(json.version).toBe('1.0.0');
+
+    // Verify the logger has been called with the version updated
+    expect(context.log).toHaveBeenCalledWith(
+      'Write version %s to package.json in %s',
+      '1.0.0',
+      tempDir,
+    );
+  });
+});
 
 // test("Updade package.json and npm-shrinkwrap.json", async t => {
 //   const cwd = tempy.directory();

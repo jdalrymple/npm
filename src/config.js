@@ -1,3 +1,4 @@
+import AggregateError from 'aggregate-error';
 import { isString, isNil, isBoolean } from 'lodash';
 import { getError } from './error';
 

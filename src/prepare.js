@@ -20,7 +20,12 @@ async function updatePkgVersion(npmrc, basePath, { env, stdout, stderr, version,
   await versionResult;
 }
 
-async function createTarball(npmrc, basePath, { cwd, env, stdout, stderr, version, logger }) {
+async function createTarball(
+  npmrc,
+  basePath,
+  { tarballDir },
+  { cwd, env, stdout, stderr, version, logger },
+) {
   logger.log('Creating npm package version %s', version);
 
   const packResult = execa('npm', ['pack', basePath, '--userconfig', npmrc], {
@@ -59,13 +64,18 @@ export async function prepareNpm(
   });
 
   if (tarballDir && isPrivate !== true) {
-    await createTarball(npmrc, basePath, {
-      cwd,
-      env,
-      stdout,
-      stderr,
-      version,
-      logger,
-    });
+    await createTarball(
+      npmrc,
+      basePath,
+      { tarballDir },
+      {
+        cwd,
+        env,
+        stdout,
+        stderr,
+        version,
+        logger,
+      },
+    );
   }
 }

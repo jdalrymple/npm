@@ -1,20 +1,34 @@
-// const path = require("path");
-// const test = require("ava");
-// const { appendFile } = require("fs-extra");
-// const tempy = require("tempy");
-// const getRegistry = require("../lib/get-registry");
+// import path from 'path';
+import { remove } from 'fs-extra';
+import { directory as createDir } from 'tempy';
+import { getRegistry } from '../../src/npm-utils';
 
-// test("Get default registry", t => {
-//   const cwd = tempy.directory();
-//   t.is(
-//     getRegistry({ name: "package-name" }, { cwd, env: {} }),
-//     "https://registry.npmjs.org/"
-//   );
-//   t.is(
-//     getRegistry({ name: "package-name", publishConfig: {} }, { cwd, env: {} }),
-//     "https://registry.npmjs.org/"
-//   );
-// });
+describe('npmUtils.getRegistry', () => {
+  let tempDir;
+
+  beforeEach(() => {
+    tempDir = createDir();
+  });
+
+  afterEach(async () => {
+    await remove(tempDir);
+  });
+
+  it('should get the default registry without publish configuration', async () => {
+    const reg = await getRegistry({ name: 'package-name' }, { cwd: tempDir, env: {} });
+
+    expect(reg).toEqual('https://registry.npmjs.org/');
+  });
+
+  it('should get the default registry with publish configuration', async () => {
+    const reg = await getRegistry(
+      { name: 'package-name', publishConfig: {} },
+      { cwd: tempDir, env: {} },
+    );
+
+    expect(reg).toEqual('https://registry.npmjs.org/');
+  });
+});
 
 // test('Get the registry configured in ".npmrc" and normalize trailing slash', async t => {
 //   const cwd = tempy.directory();

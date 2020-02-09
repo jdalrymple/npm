@@ -1,8 +1,23 @@
-// const path = require("path");
-// const test = require("ava");
-// const { outputJson, writeFile } = require("fs-extra");
-// const tempy = require("tempy");
-// const getPkg = require("../lib/get-pkg");
+import path from 'path';
+import { outputJson, remove } from 'fs-extra';
+import { directory as createDir } from 'tempy';
+import { getPkgInfo } from '../../src/package-config';
+
+describe('packageConfig.getPkgInfo', () => {
+  it('should validate name and version then return parsed package.json if not private', async () => {
+    const cwd = createDir();
+    const pkg = { name: 'package', version: '0.0.0' };
+
+    await outputJson(path.resolve(cwd, 'package.json'), pkg);
+
+    const info = await getPkgInfo(cwd);
+
+    expect(info.name).toEqual(pkg.name);
+    expect(info.version).toEqual(pkg.version);
+
+    await remove(cwd);
+  });
+});
 
 // test("Verify name and version then return parsed package.json", async t => {
 //   const cwd = tempy.directory();
