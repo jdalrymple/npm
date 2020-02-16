@@ -1,6 +1,5 @@
 import readPkg from 'read-pkg';
 import loadJsonFile from 'load-json-file';
-import AggregateError from 'aggregate-error';
 import path from 'path';
 import glob from 'globby';
 import { getError } from './error';
@@ -21,15 +20,15 @@ export async function getPkgInfo(cwd) {
     return pkg;
   } catch (error) {
     if (error.code === 'ENOENT') {
-      throw new AggregateError([getError('ENOPKG')]);
+      throw getError('ENOPKG');
     } else {
-      throw new AggregateError([error]);
+      throw error;
     }
   }
 }
 
 export async function getAllPkgInfo({ pkgRoot }, { cwd }) {
-  const rootPath = pkgRoot ? path.resolve(cwd, String(pkgRoot)) : cwd;
+  const rootPath = pkgRoot ? path.resolve(cwd, String(pkgRoot)) : cwd;  
   const pkg = await getPkgInfo(rootPath);
   let subPkgs;
 

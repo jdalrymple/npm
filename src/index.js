@@ -1,5 +1,5 @@
 import { file as createFile } from 'tempy';
-import { addNpmChannel } from './channel';
+import { addChannelNpm } from './channel';
 import { prepareNpm } from './prepare';
 import { publishNpm } from './publish';
 import { verifyNpm } from './verify';
@@ -60,6 +60,8 @@ export async function publish(pluginConfig, context) {
 
 export async function addChannel(pluginConfig, context) {
   if (!verified) await verifyConditions(pluginConfig, context);
+
+  const { rootPkg, subPkgs } = await getAllPkgInfo(pluginConfig, context);
 
   const releaseInfo = await Promise.all(
     [rootPkg, ...subPkgs].map(p => {

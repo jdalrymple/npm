@@ -1,6 +1,5 @@
 import execa from 'execa';
 import normalizeUrl from 'normalize-url';
-import AggregateError from 'aggregate-error';
 import path from 'path';
 import rc from 'rc';
 import getAuthToken from 'registry-auth-token';
@@ -37,7 +36,7 @@ async function setAuth(
     ? (await Promise.all(configs.map(config => readFile(config)))).join('\n')
     : '';
 
-  if (getAuthToken(registry, { npmrc: rcConfig })) return outputFile(npmrc, currentConfig);
+  if (getAuthToken(registry, { npmrc: rcConfig })) await outputFile(npmrc, currentConfig);
 
   if (NPM_USERNAME && NPM_PASSWORD && NPM_EMAIL) {
     await outputFile(
@@ -56,7 +55,7 @@ async function setAuth(
 
     logger.log(`Wrote NPM_TOKEN to ${npmrc}`);
   } else {
-    throw new AggregateError([getError('ENONPMTOKEN', { registry })]);
+    throw getError('ENONPMTOKEN', { registry });
   }
 }
 
@@ -76,7 +75,10 @@ export function getReleasesInfo(
   };
 }
 
-export function getRegistry({ publishConfig: { registry } = {}, name }, { cwd, env }) {
+export function getRegistry(
+  { publishConfig: { registry } = {}, name },
+  { cwd = '.', env = {} } = {},
+) {
   return (
     registry ||
     env.NPM_CONFIG_REGISTRY ||
@@ -117,7 +119,7 @@ export async function verifyNpmAuth(npmrc, pkg, context) {
 
       await whoamiResult;
     } catch (e) {
-      throw new AggregateError([getError('EINVALIDNPMTOKEN', { registry })]);
+      throw getError('EINVALIDNPMTOKEN', { registry });
     }
   }
 }
@@ -129,7 +131,7 @@ export function summarizeReleasesInfo(releasesInfo) {
 
   return {
     name: releasesInfo[0].name,
-    urls: urls,
+    urls,
     channel: releasesInfo[0].channel,
   };
 }

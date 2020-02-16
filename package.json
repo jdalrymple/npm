@@ -1,7 +1,7 @@
 {
-  "name": "semantic-release-mnpm",
+  "name": "semantic-release-npmx",
   "description": "semantic-release plugin to publish a npm package that supports monorepos",
-  "homepage": "https://github.com/jdalrymple/semantic-release-mnpm#readme",
+  "homepage": "https://github.com/jdalrymple/semantic-release-npmx#readme",
   "version": "1.0.0",
   "dependencies": {
     "@semantic-release/error": "^2.2.0",
@@ -58,7 +58,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jdalrymple/semantic-release-mnpm.git"
+    "url": "https://github.com/jdalrymple/semantic-release-npmx.git"
   },
   "scripts": {
     "build": "rollup -c",
