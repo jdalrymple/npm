@@ -9,18 +9,20 @@ import nerfDart from 'nerf-dart';
 import { getError } from './error';
 
 // Set the environment variable `LEGACY_TOKEN` when user use the legacy auth, so it can be resolved by npm CLI
-function setLegacyToken({ env }) {
-  if (env.NPM_USERNAME && env.NPM_PASSWORD && env.NPM_EMAIL) {
-    env.LEGACY_TOKEN = Buffer.from(`${env.NPM_USERNAME}:${env.NPM_PASSWORD}`, 'utf8').toString(
-      'base64',
-    );
+export function getLegacyToken({ NPM_EMAIL, NPM_PASSWORD, NPM_USERNAME } = {}) {
+  if (NPM_USERNAME && NPM_PASSWORD && NPM_EMAIL) {
+    return {
+      LEGACY_TOKEN: Buffer.from(`${NPM_USERNAME}:${NPM_PASSWORD}`, 'utf8').toString('base64'),
+    };
   }
+
+  return {};
 }
 
-async function setAuth(
+export async function setAuth(
   npmrc,
   registry,
-  { cwd, env: { NPM_TOKEN, NPM_CONFIG_USERCONFIG, NPM_USERNAME, NPM_PASSWORD, NPM_EMAIL }, logger },
+  { cwd = '.', env: { NPM_TOKEN, NPM_EMAIL, NPM_CONFIG_USERCONFIG, LEGACY_TOKEN } = {}, logger },
 ) {
   logger.log('Verify authentication for registry %s', registry);
 
@@ -33,24 +35,27 @@ async function setAuth(
   if (configs) logger.log('Reading npm config from %s', configs.join(', '));
 
   const currentConfig = configs
-    ? (await Promise.all(configs.map(config => readFile(config)))).join('\n')
+    ? (await Promise.all(configs.map(c => readFile(c)))).join('\n')
     : '';
 
-  if (getAuthToken(registry, { npmrc: rcConfig })) await outputFile(npmrc, currentConfig);
+  if (getAuthToken(registry, { npmrc: rcConfig })) {
+    await outputFile(npmrc, currentConfig);
+    return;
+  }
 
-  if (NPM_USERNAME && NPM_PASSWORD && NPM_EMAIL) {
+  const currentConfigContent = currentConfig ? `${currentConfig}\n` : '';
+
+  if (LEGACY_TOKEN && NPM_EMAIL) {
     await outputFile(
       npmrc,
-      `${currentConfig ? `${currentConfig}\n` : ''}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`,
+      `${currentConfigContent}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`,
     );
 
     logger.log(`Wrote NPM_USERNAME, NPM_PASSWORD and NPM_EMAIL to ${npmrc}`);
   } else if (NPM_TOKEN) {
     await outputFile(
       npmrc,
-      `${currentConfig ? `${currentConfig}\n` : ''}${nerfDart(
-        registry,
-      )}:_authToken = \${NPM_TOKEN}`,
+      `${currentConfigContent}${nerfDart(registry)}:_authToken = \${NPM_TOKEN}`,
     );
 
     logger.log(`Wrote NPM_TOKEN to ${npmrc}`);
@@ -61,7 +66,7 @@ async function setAuth(
 
 export function getReleasesInfo(
   { name },
-  { env: { DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/' }, nextRelease: { version } },
+  { env: { DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/' } = {}, nextRelease: { version } },
   distTag,
   registry,
 ) {
@@ -93,21 +98,18 @@ export function getRegistry(
   );
 }
 
-export async function verifyNpmAuth(npmrc, pkg, context) {
-  const {
-    cwd,
-    env: { DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org/', ...env },
-    stdout,
-    stderr,
-  } = context;
+export async function verifyNpmAuth(npmrc, context, pkg) {
+  const { cwd, stdout, stderr } = context;
   const registry = getRegistry(pkg, context);
-
-  // Not sure if this is needed?
-  setLegacyToken(context);
+  const env = {
+    DEFAULT_NPM_REGISTRY: 'https://registry.npmjs.org/',
+    ...getLegacyToken(context.env),
+    ...context.env,
+  };
 
   await setAuth(npmrc, registry, context);
 
-  if (normalizeUrl(registry) === normalizeUrl(DEFAULT_NPM_REGISTRY)) {
+  if (normalizeUrl(registry) === normalizeUrl(env.DEFAULT_NPM_REGISTRY)) {
     try {
       const whoamiResult = execa('npm', ['whoami', '--userconfig', npmrc, '--registry', registry], {
         cwd,
@@ -125,13 +127,14 @@ export async function verifyNpmAuth(npmrc, pkg, context) {
 }
 
 export function summarizeReleasesInfo(releasesInfo) {
-  const urls = releasesInfo.filter(i => i === false).map(i => i.url);
+  const validReleases = releasesInfo.filter(i => i !== false);
+  const urls = validReleases.map(i => i.url);
 
   if (urls.length === 0) return false;
 
   return {
-    name: releasesInfo[0].name,
+    name: validReleases[0].name,
     urls,
-    channel: releasesInfo[0].channel,
+    channel: validReleases[0].channel,
   };
 }

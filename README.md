@@ -1,4 +1,4 @@
-# semantic-release-mnpm
+# semantic-release-npmx
 
 **[IN DEVELOPMENT]** [**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package based off of the work done [here](https://github.com/semantic-release/npm). Supports monorepos (lerna, and yarn) **but** is restricted to fixed versioning for now.
 

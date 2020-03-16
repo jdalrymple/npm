@@ -23,8 +23,8 @@ async function updatePkgVersion(npmrc, basePath, { env, stdout, stderr, version,
 async function createTarball(
   npmrc,
   basePath,
-  { tarballDir },
   { cwd, env, stdout, stderr, version, logger },
+  { tarballDir } = {},
 ) {
   logger.log('Creating npm package version %s', version);
 
@@ -49,8 +49,8 @@ async function createTarball(
 
 export async function prepareNpm(
   npmrc,
-  { pkgRoot, tarballDir },
   { cwd, env, stdout, stderr, nextRelease: { version }, logger },
+  { pkgRoot, tarballDir } = {},
   isPrivate = false,
 ) {
   const basePath = pkgRoot ? path.resolve(cwd, pkgRoot) : cwd;
@@ -67,7 +67,6 @@ export async function prepareNpm(
     await createTarball(
       npmrc,
       basePath,
-      { tarballDir },
       {
         cwd,
         env,
@@ -76,6 +75,7 @@ export async function prepareNpm(
         version,
         logger,
       },
+      { tarballDir },
     );
   }
 }

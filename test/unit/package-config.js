@@ -13,7 +13,7 @@ afterEach(async () => {
   await remove(cwd);
 });
 
-describe('packageConfig.getPkgInfo', () => {
+describe('getPkgInfo', () => {
   it('should validate name and version then return parsed package.json if not private', async () => {
     const pkg = { name: 'package', version: '0.0.0' };
 
@@ -61,16 +61,29 @@ describe('packageConfig.getPkgInfo', () => {
   });
 });
 
-describe('packageConfig.getAllPkgInfo', () => {
+describe('getAllPkgInfo', () => {
   it('should verify name and version then return parsed package.json from a sub-directory in a single package repository', async () => {
     const pkgRoot = 'dist';
     const pkg = { name: 'package', version: '0.0.0' };
 
     await outputJson(path.resolve(cwd, pkgRoot, 'package.json'), pkg);
 
-    const { rootPkg } = await getAllPkgInfo({ pkgRoot }, { cwd });
+    const { rootPkg } = await getAllPkgInfo({ cwd }, { pkgRoot });
 
     expect(rootPkg.name).toEqual(pkg.name);
     expect(rootPkg.version).toEqual(pkg.version);
+  });
+
+  it('should look for subpackage configuration if root is private', async () => {
+    const pkgRoot = 'dist';
+    const pkg = { name: 'package', version: '0.0.0', private: true };
+
+    await outputJson(path.resolve(cwd, pkgRoot, 'package.json'), pkg);
+
+    const { rootPkg, subPkgs } = await getAllPkgInfo({ cwd }, { pkgRoot });
+
+    expect(rootPkg.name).toEqual(pkg.name);
+    expect(rootPkg.version).toEqual(pkg.version);
+    expect(subPkgs).toBeUndefined();
   });
 });

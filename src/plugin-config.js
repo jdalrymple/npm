@@ -58,7 +58,7 @@ function validate({ npmPublish, tarballDir, pkgRoot }) {
  *  "tarballDir": "dist",
  * }],
  */
-export async function verifyPluginConfig(pluginConfig) {
+export function verifyPluginConfig(pluginConfig) {
   const errors = [];
 
   if (pluginConfig.default) {

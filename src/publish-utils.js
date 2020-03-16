@@ -1,19 +1,12 @@
 import * as path from 'path';
 import execa from 'execa';
-import { getChannel } from './channel';
+import { getChannel } from './channel-utils';
 import { getRegistry, getReleasesInfo } from './npm-utils';
 
-export async function publishNpm(npmrc, { npmPublish, pkgRoot }, context, pkgJson) {
-  const {
-    cwd,
-    env,
-    stdout,
-    stderr,
-    nextRelease: { version, channel },
-    logger,
-  } = context;
+export async function publishNpm(npmrc, context, { npmPublish, pkgRoot }, pkgJson) {
+  const { cwd, env, stdout, stderr, nextRelease: { version, channel } = {}, logger } = context;
 
-  if (npmPublish === false || pkgJson.private == true) {
+  if (npmPublish === false || pkgJson.private === true) {
     logger.log(
       `Skip publishing to npm registry as ${
         npmPublish === false ? 'npmPublish' : "package.json's private property"

@@ -8,15 +8,8 @@ export function getChannel(channel) {
   return validRange(channel) ? `release-${channel}` : channel;
 }
 
-export async function addNpmChannel(npmrc, { npmPublish }, context, pkgJson) {
-  const {
-    cwd,
-    env,
-    stdout,
-    stderr,
-    nextRelease: { version, channel },
-    logger,
-  } = context;
+export async function addChannelNpm(npmrc, context = {}, { npmPublish } = {}, pkgJson = {}) {
+  const { cwd, env, stdout, stderr, nextRelease: { version, channel } = {}, logger } = context;
 
   if (npmPublish === false || pkgJson.private === true) {
     logger.log(
