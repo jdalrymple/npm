@@ -130,7 +130,6 @@ Configuration is pretty much the same, but nested to include configuration for s
 ```json
 {
   "plugins": [
-    ...
     ["semantic-release-npmx", {
       "default": {
         "npmPublish": false,
@@ -141,7 +140,6 @@ Configuration is pretty much the same, but nested to include configuration for s
         "tarballDir": "dist",
       }
     }],
-    ...
   ]
 }
 ```
