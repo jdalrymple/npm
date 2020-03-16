@@ -1,8 +1,5 @@
-<div align="center">
-  <br>
-  <p>semantic-release-npmx
-</div>
-<br>
+<h1 align="center" style="border-bottom: none;">📦🚀  + <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOIAAADfCAMAAADcKv+WAAAASFBMVEXLODf////or6/JKSjLNjXKMTDZd3bekJDJLizIISD03NzJKyrjoaDx0NDPS0r78PDmqqrdjIvHHBrGCATRVlXNPTzy1tbVZ2ZMcXmRAAABZklEQVR4nO3PUVbCQBBFwQATFBUDBHT/O/UT/iYcwmHyrLuAfl3dKr7u1Q88v39C3K8jOwxX4vG0SWz8uBLf3rvEdogBISaEmBBiQogJISaEmBBiQogJISaEmBBiQogJISaEmBBiQvcSS99W8xPLedtWZXbi59eqrUrdiIj4+hAREdsIERGxjRAREdsIERGxjRAREdsIERGxjRAREdsIERHxsYYJLZu4H3fVLgsn7qpT5RsRERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERER8bF+2iWW83aWfvv61GXKobrwXmJX+nmqL02bmnDnXuICQ0wIMSHEhBATQkwIMSHEhBATQkwIMSHEhBATQkwIMSHEhBATuiUeT5vExhvifh3ZYbgSw0NM6A8BGqNKRN9lgwAAAABJRU5ErkJggg==" width=10 height=10/> semantic-release-npmx</h1>
+<h3 align="center">Semantic release plugin for npm publishing that supports monorepos!</h3>
 <p align="center">
   <a href="https://gitlab.com/jdalrymple/gitbeaker/pipelines">
     <img src="https://img.shields.io/gitlab/pipeline/jdalrymple/gitbeaker/master" alt="Gitlab Pipeline Status">
