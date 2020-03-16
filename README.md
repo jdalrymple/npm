@@ -150,3 +150,5 @@ Configuration is pretty much the same, but nested to include configuration for s
 - [ ] Handle cases where package config is passed without default configuration. What should happen?
 - [ ] Handle independant versioning
 - [ ] Refine channel addition. Right now the root package is used for the channel name
+- [ ] Finish testing exported functions
+- [ ] Add more extensive tests for complex configurations
