@@ -1,14 +1,40 @@
-# @semantic-release/npm
 
-[**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package.
+<h1 align="center" style="border-bottom: none;">📦🚀 + <img src='https://rawgithub.com/jdalrymple/semantic-release-npmx/monorepo-support/.github/npm_icon.svg?sanitize=true'/> semantic-release-npmx</h1>
+<h3 align="center">Semantic release plugin for npm publishing that supports monorepos!</h3>
+<p align="center">
+  <a href="https://travis-ci.com/jdalrymple/semantic-release-npmx">
+    <img src="https://travis-ci.com/jdalrymple/semantic-release-npmx.svg?branch=master" alt="Travis Pipeline Status">
+  </a>
+  <a href="https://codeclimate.com/github/jdalrymple/semantic-release-npx">
+    <img src="https://codeclimate.com/github/jdalrymple/semantic-release-npx/badges/gpa.svg" alt="Code Climate maintainability">
+  </a>
+  <a href="https://codecov.io/gh/jdalrymple/semantic-release-npx">
+    <img src="https://img.shields.io/codecov/c/github/jdalrymple/semantic-release-npx/master.svg" alt="CodeCov test coverage">
+  </a>
+  <a href="https://david-dm.org/jdalrymple/semantic-release-npx">
+    <img src="https://david-dm.org/jdalrymple/semantic-release-npx/status.svg" alt="Dependency Status" />
+  </a>
+  <a href="https://david-dm.org/jdalrymple/semantic-release-npx?type=dev">
+    <img src="https://david-dm.org/jdalrymple/semantic-release-npx/dev-status.svg.svg" alt="Dev Dependency Status" />
+  </a>
+  <img src="https://flat.badgen.net/dependabot/jdalrymple/semantic-release-npmx?icon=dependabot" alt="Dependabot Badge" />
+<!--   <a href="https://github.com/semantic-release/semantic-release">
+    <img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="Semantic Release">
+  </a> -->
+  <a href="http://commitizen.github.io/cz-cli/">
+    <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen">
+  </a>
+  <img src="https://img.shields.io/badge/code%20style-prettier-ff69b4.svg" alt="Prettier">
+  <a href="https://packagephobia.now.sh/result?p=semantic-release-npx">
+    <img src="https://packagephobia.now.sh/badge?p=semantic-release-npx" alt="Install Size">
+  </a>
+  <a href="LICENSE.md">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="Licence: MIT">
+  </a>
+</p>
 
-[![Travis](https://img.shields.io/travis/semantic-release/npm.svg)](https://travis-ci.org/semantic-release/npm)
-[![Codecov](https://img.shields.io/codecov/c/github/semantic-release/npm.svg)](https://codecov.io/gh/semantic-release/npm)
-[![Greenkeeper badge](https://badges.greenkeeper.io/semantic-release/npm.svg)](https://greenkeeper.io/)
+**[IN DEVELOPMENT]** [**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package based off of the work done [here](https://github.com/semantic-release/npm). Supports monorepos (lerna, and yarn) **but** is restricted to fixed versioning for now.
 
-[![npm latest version](https://img.shields.io/npm/v/@semantic-release/npm/latest.svg)](https://www.npmjs.com/package/@semantic-release/npm)
-[![npm next version](https://img.shields.io/npm/v/@semantic-release/npm/next.svg)](https://www.npmjs.com/package/@semantic-release/npm)
-[![npm beta version](https://img.shields.io/npm/v/@semantic-release/npm/beta.svg)](https://www.npmjs.com/package/@semantic-release/npm)
 
 | Step               | Description                                                                                                                                   |                                                                     |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
@@ -32,7 +58,7 @@ The plugin can be configured in the [**semantic-release** configuration file](ht
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/npm",
+    "semantic-release-npmx",
   ]
 }
 ```
@@ -45,7 +71,7 @@ The npm authentication configuration is **required** and can be set via [environ
 
 Both the [token](https://docs.npmjs.com/getting-started/working_with_tokens) and the legacy (`username`, `password` and `email`) authentication are supported. It is recommended to use the [token](https://docs.npmjs.com/getting-started/working_with_tokens) authentication. The legacy authentication is supported as the alternative npm registries [Artifactory](https://www.jfrog.com/open-source/#os-arti) and [npm-registry-couchapp](https://github.com/npm/npm-registry-couchapp) only supports that form of authentication.
 
-**Note**: Only the `auth-only` [level of npm two-factor authentication](https://docs.npmjs.com/getting-started/using-two-factor-authentication#levels-of-authentication) is supported, **semantic-release** will not work with the default `auth-and-writes` level.
+**Note**: Only the `auth-only` [level of npm two-factor authentication](https://docs.npmjs.com/getting-started/using-two-factor-authentication#levels-of-authentication) is supported, **semantic-release** will not work with the default `auth-and-writes` level.
 
 ### Environment variables
 
@@ -95,7 +121,7 @@ The `npmPublish` and `tarballDir` option can be used to skip the publishing to t
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/npm", {
+    ["semantic-release-npmx", {
       "npmPublish": false,
       "tarballDir": "dist",
     }],
@@ -113,7 +139,7 @@ When publishing from a sub-directory with the `pkgRoot` option, the `package.jso
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/npm", {
+    ["semantic-release-npmx", {
       "pkgRoot": "dist",
     }],
     ["@semantic-release/git", {
@@ -129,3 +155,32 @@ When publishing from a sub-directory with the `pkgRoot` option, the `package.jso
   }
 }
 ```
+
+#### Monorepos
+Configuration is pretty much the same, but nested to include configuration for subpackages as well.
+`tarballDir` will be relative to the root directory.
+
+```json
+{
+  "plugins": [
+    ["semantic-release-npmx", {
+      "default": {
+        "npmPublish": false,
+        "tarballDir": "dist",
+      },
+      "package1": {
+        "npmPublish": true,
+        "tarballDir": "dist",
+      }
+    }],
+  ]
+}
+```
+
+## TODO
+- [ ] Handle cases where package config is passed without default configuration. What should happen?
+- [ ] Handle independant versioning
+- [ ] Refine channel addition. Right now the root package is used for the channel name
+- [ ] Finish testing exported functions
+- [ ] Add more extensive tests for complex configurations
+- [ ] Add integration testing using verdaccio

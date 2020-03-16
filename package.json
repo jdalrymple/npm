@@ -1,59 +1,48 @@
 {
-  "name": "@semantic-release/npm",
-  "description": "semantic-release plugin to publish a npm package",
-  "version": "0.0.0-development",
-  "author": "Pierre Vanduynslager (https://twitter.com/@pvdlg_)",
-  "ava": {
-    "files": [
-      "test/**/*.test.js"
-    ],
-    "timeout": "2m"
-  },
-  "bugs": {
-    "url": "https://github.com/semantic-release/npm/issues"
-  },
-  "contributors": [
-    "Stephan Bönnemann <stephan@boennemann.me> (http://boennemann.me)",
-    "Gregor Martynus (https://twitter.com/gr2m)"
-  ],
+  "name": "semantic-release-npmx",
+  "description": "semantic-release plugin to publish a npm package that supports monorepos",
+  "homepage": "https://github.com/jdalrymple/semantic-release-npmx#readme",
+  "version": "0.0.1",
   "dependencies": {
     "@semantic-release/error": "^2.2.0",
-    "aggregate-error": "^3.0.0",
+    "aggregate-error": "^3.0.1",
     "execa": "^4.0.0",
-    "fs-extra": "^8.0.0",
+    "fs-extra": "^8.1.0",
+    "globby": "^11.0.0",
+    "jest": "^25.1.0",
+    "load-json-file": "^6.2.0",
     "lodash": "^4.17.15",
     "nerf-dart": "^1.0.0",
     "normalize-url": "^5.0.0",
-    "npm": "^6.10.3",
     "rc": "^1.2.8",
-    "read-pkg": "^5.0.0",
-    "registry-auth-token": "^4.0.0",
-    "semver": "^7.1.2",
-    "tempy": "^0.3.0"
+    "read-pkg": "^5.2.0",
+    "registry-auth-token": "^4.1.1",
+    "semver": "^7.1.3",
+    "tempy": "^0.5.0"
   },
   "devDependencies": {
-    "ava": "^3.1.0",
-    "clear-module": "^4.0.0",
-    "codecov": "^3.0.0",
-    "delay": "^4.0.0",
-    "dockerode": "^3.0.0",
-    "get-stream": "^5.0.0",
-    "got": "^10.0.1",
-    "nyc": "^15.0.0",
-    "p-retry": "^4.0.0",
-    "semantic-release": "^17.0.0",
-    "sinon": "^8.0.0",
-    "stream-buffers": "^3.0.2",
-    "xo": "^0.25.0"
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "@rollup/plugin-json": "^4.0.2",
+    "babel-jest": "^25.1.0",
+    "codecov": "^3.6.5",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "rollup": "^2.0.6",
+    "rollup-plugin-terser": "^5.3.0",
+    "stream-buffers": "^3.0.2"
   },
   "engines": {
     "node": ">=10.18"
   },
   "files": [
-    "lib",
-    "index.js"
+    "dist"
   ],
-  "homepage": "https://github.com/semantic-release/npm#readme",
   "keywords": [
     "npm",
     "publish",
@@ -62,42 +51,19 @@
     "version"
   ],
   "license": "MIT",
-  "main": "index.js",
-  "nyc": {
-    "include": [
-      "lib/**/*.js",
-      "index.js"
-    ],
-    "reporter": [
-      "json",
-      "text",
-      "html"
-    ],
-    "all": true
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "peerDependencies": {
-    "semantic-release": ">=16.0.0 <18.0.0"
-  },
-  "prettier": {
-    "printWidth": 120,
-    "trailingComma": "es5"
-  },
-  "publishConfig": {
-    "access": "public"
+    "semantic-release": "^17.0.4"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/semantic-release/npm.git"
+    "url": "https://github.com/jdalrymple/semantic-release-npmx.git"
   },
   "scripts": {
-    "codecov": "codecov -f coverage/coverage-final.json",
-    "lint": "xo",
-    "pretest": "npm run lint",
-    "semantic-release": "semantic-release",
-    "test": "nyc ava -v"
-  },
-  "xo": {
-    "prettier": true,
-    "space": true
+    "build": "rollup -c",
+    "test": "jest test/unit",
+    "lint": "prettier --check '{src,test}/**/*.js' && eslint '{src,test}/**/*/*.js'",
+    "lint:fix": "prettier --write '{src,test}/**/*.js' && eslint '{src,test}/**/*/*.js' --fix"
   }
 }
