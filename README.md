@@ -25,7 +25,7 @@ The plugin can be configured in the [**semantic-release** configuration file](ht
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/npm",
+    "semantic-release-npmx",
   ]
 }
 ```
@@ -88,7 +88,7 @@ The `npmPublish` and `tarballDir` option can be used to skip the publishing to t
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/npm", {
+    ["semantic-release-npmx", {
       "npmPublish": false,
       "tarballDir": "dist",
     }],
@@ -106,7 +106,7 @@ When publishing from a sub-directory with the `pkgRoot` option, the `package.jso
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/npm", {
+    ["semantic-release-npmx", {
       "pkgRoot": "dist",
     }],
     ["@semantic-release/git", {
@@ -120,5 +120,28 @@ When publishing from a sub-directory with the `pkgRoot` option, the `package.jso
   "scripts": {
     "postpublish": "cp -r dist/package.json . && cp -r dist/npm-shrinkwrap.json ."
   }
+}
+```
+
+#### Monorepos
+Configuration is pretty much the same, but nested to include configuration for subpackages as well.
+`tarballDir` will be relative to the root directory.
+
+```json
+{
+  "plugins": [
+    ...
+    ["semantic-release-npmx", {
+      "default": {
+        "npmPublish": false,
+        "tarballDir": "dist",
+      },
+      "package1": {
+        "npmPublish": true,
+        "tarballDir": "dist",
+      }
+    }],
+    ...
+  ]
 }
 ```
