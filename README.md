@@ -1,6 +1,8 @@
 # semantic-release-npmx
 
-**[IN DEVELOPMENT]** [**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package based off of the work done [here](https://github.com/semantic-release/npm). Supports monorepos (lerna, and yarn) **but** is restricted to fixed versioning for now.
+**[IN DEVELOPMENT]**
+
+[**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package based off of the work done [here](https://github.com/semantic-release/npm). Supports monorepos (lerna, and yarn) **but** is restricted to fixed versioning for now.
 
 
 | Step               | Description                                                                                                                                   |                                                                     |
@@ -143,3 +145,8 @@ Configuration is pretty much the same, but nested to include configuration for s
   ]
 }
 ```
+
+## TODO
+- [ ] Handle cases where package config is passed without default configuration. What should happen?
+- [ ] Handle independant versioning
+- [ ] Refine channel addition. Right now the root package is used for the channel name
