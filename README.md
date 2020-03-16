@@ -1,8 +1,9 @@
-<h1 align="center" style="border-bottom: none;">📦🚀 + <span><svg viewBox="0 0 27.23 27.23" height="30%" width="30%"><rect fill="#CC3534" width="27.23" height="27.23" rx="2"></rect><polygon fill="#fff" points="5.8 21.75 13.66 21.75 13.67 9.98 17.59 9.98 17.58 21.76 21.51 21.76 21.52 6.06 5.82 6.04 5.8 21.75"></polygon></svg></span> semantic-release-npmx</h1>
+
+<h1 align="center" style="border-bottom: none;">📦🚀 + <span><svg viewBox="0 0 27.23 27.23" height="5%" width="5%"><rect fill="#CC3534" width="27.23" height="27.23" rx="2"></rect><polygon fill="#fff" points="5.8 21.75 13.66 21.75 13.67 9.98 17.59 9.98 17.58 21.76 21.51 21.76 21.52 6.06 5.82 6.04 5.8 21.75"></polygon></svg></span> semantic-release-npmx</h1>
 <h3 align="center">Semantic release plugin for npm publishing that supports monorepos!</h3>
 <p align="center">
-  <a href="https://gitlab.com/jdalrymple/gitbeaker/pipelines">
-    <img src="https://img.shields.io/gitlab/pipeline/jdalrymple/gitbeaker/master" alt="Gitlab Pipeline Status">
+  <a href="https://travis-ci.com/jdalrymple/semantic-release-npmx">
+    <img src="https://travis-ci.com/jdalrymple/semantic-release-npmx.svg?branch=master" alt="Travis Pipeline Status">
   </a>
   <a href="https://codeclimate.com/github/jdalrymple/semantic-release-npx">
     <img src="https://codeclimate.com/github/jdalrymple/semantic-release-npx/badges/gpa.svg" alt="Code Climate maintainability">
@@ -70,7 +71,7 @@ The npm authentication configuration is **required** and can be set via [environ
 
 Both the [token](https://docs.npmjs.com/getting-started/working_with_tokens) and the legacy (`username`, `password` and `email`) authentication are supported. It is recommended to use the [token](https://docs.npmjs.com/getting-started/working_with_tokens) authentication. The legacy authentication is supported as the alternative npm registries [Artifactory](https://www.jfrog.com/open-source/#os-arti) and [npm-registry-couchapp](https://github.com/npm/npm-registry-couchapp) only supports that form of authentication.
 
-**Note**: Only the `auth-only` [level of npm two-factor authentication](https://docs.npmjs.com/getting-started/using-two-factor-authentication#levels-of-authentication) is supported, **semantic-release** will not work with the default `auth-and-writes` level.
+**Note**: Only the `auth-only` [level of npm two-factor authentication](https://docs.npmjs.com/getting-started/using-two-factor-authentication#levels-of-authentication) is supported, **semantic-release** will not work with the default `auth-and-writes` level.
 
 ### Environment variables
 
