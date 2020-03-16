@@ -20,6 +20,6 @@ export default {
   ],
   plugins: [
     json(),
-    // terser({ mangle: false })
+    terser({ mangle: false })
   ]
 };
