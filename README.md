@@ -1,8 +1,41 @@
-# semantic-release-npmx
+<div align="center">
+  <br>
+  <p>semantic-release-npmx
+</div>
+<br>
+<p align="center">
+  <a href="https://gitlab.com/jdalrymple/gitbeaker/pipelines">
+    <img src="https://img.shields.io/gitlab/pipeline/jdalrymple/gitbeaker/master" alt="Gitlab Pipeline Status">
+  </a>
+  <a href="https://codeclimate.com/github/jdalrymple/semantic-release-npx">
+    <img src="https://codeclimate.com/github/jdalrymple/semantic-release-npx/badges/gpa.svg" alt="Code Climate maintainability">
+  </a>
+  <a href="https://codecov.io/gh/jdalrymple/semantic-release-npx">
+    <img src="https://img.shields.io/codecov/c/github/jdalrymple/semantic-release-npx/master.svg" alt="CodeCov test coverage">
+  </a>
+  <a href="https://david-dm.org/jdalrymple/semantic-release-npx">
+    <img src="https://david-dm.org/jdalrymple/semantic-release-npx/status.svg" alt="Dependency Status" />
+  </a>
+  <a href="https://david-dm.org/jdalrymple/semantic-release-npx?type=dev">
+    <img src="https://david-dm.org/jdalrymple/semantic-release-npx/dev-status.svg.svg" alt="Dev Dependency Status" />
+  </a>
+  <img src="https://flat.badgen.net/dependabot/jdalrymple/semantic-release-npmx?icon=dependabot" alt="Dependabot Badge" />
+<!--   <a href="https://github.com/semantic-release/semantic-release">
+    <img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="Semantic Release">
+  </a> -->
+  <a href="http://commitizen.github.io/cz-cli/">
+    <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen">
+  </a>
+  <img src="https://img.shields.io/badge/code%20style-prettier-ff69b4.svg" alt="Prettier">
+  <a href="https://packagephobia.now.sh/result?p=semantic-release-npx">
+    <img src="https://packagephobia.now.sh/badge?p=semantic-release-npx" alt="Install Size">
+  </a>
+  <a href="LICENSE.md">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="Licence: MIT">
+  </a>
+</p>
 
-**[IN DEVELOPMENT]**
-
-[**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package based off of the work done [here](https://github.com/semantic-release/npm). Supports monorepos (lerna, and yarn) **but** is restricted to fixed versioning for now.
+**[IN DEVELOPMENT]** [**semantic-release**](https://github.com/semantic-release/semantic-release) plugin to publish a [npm](https://www.npmjs.com) package based off of the work done [here](https://github.com/semantic-release/npm). Supports monorepos (lerna, and yarn) **but** is restricted to fixed versioning for now.
 
 
 | Step               | Description                                                                                                                                   |                                                                     |
