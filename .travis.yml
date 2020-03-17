@@ -3,17 +3,17 @@ version: ~> 1.0
 services:
   - docker
 
+node_js: node
+
 jobs:
   include:
     - stage: lint
-      node_js: node
       before_script:
         - npm install
       script: 
         - npm run lint
 
     - stage: build
-      node_js: node
       before_script:
         - npm install
       script:
@@ -21,18 +21,16 @@ jobs:
 
     - &test-unit
       stage: test:unit
-      node_js: lts
       before_script:
         - npm install
       script:
         - npm run test:unit
 
     - <<: *test-unit
-      node_js: node
+      node_js: lts
 
     # - &test-integration
     #   stage: test:integration
-    #   node_js: lts
     #   env:
     #     - NPM_REGISTRY: 127.0.0.1:80:4567
     #   before_script:
@@ -43,5 +41,5 @@ jobs:
     #   - npm run test:integration -- --registry=http://127.0.0.1:4567
 
     # - <<: *test:integration
-    #   node_js: node
+    #   node_js: lts
       
