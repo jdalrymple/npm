@@ -1,5 +1,5 @@
-
-<h1 align="center" style="border-bottom: none;">📦🚀 + <img src='https://rawgithub.com/jdalrymple/semantic-release-npmx/monorepo-support/.github/npm_icon.svg?sanitize=true'/> semantic-release-npmx</h1>
+<h1 align="center" style="border-bottom: none;">📦🚀 + <img alt="npm" src=".github/ASSETS/npm_icon.svg"></h1>
+<h1 align="center">semantic-release-npmx</h1>
 <h3 align="center">Semantic release plugin for npm publishing that supports monorepos!</h3>
 <p align="center">
   <a href="https://travis-ci.com/jdalrymple/semantic-release-npmx">
