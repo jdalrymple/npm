@@ -3,11 +3,38 @@ version: ~> 1.0
 services:
   - docker
 
-import:
-  - semantic-release/semantic-release:.travis/node.yml
-  - semantic-release/semantic-release:.travis/node-versions.yml
-  - semantic-release/semantic-release:.travis/codecov.yml
+jobs:
+  include:
+    - stage: lint
+      node_js: latest
+      script: 
+      - npm run lint
 
-before_script: 
-  - npm run lint
-  - npm run build
+    - stage: build
+      node_js: latest
+      script:
+      - npm run build
+
+    - &test-unit
+      stage: test:unit
+      node_js: lts
+      script:
+      - npm run test:unit
+
+    - <<: *test-unit
+      node_js: latest
+
+    # - &test-integration
+    #   stage: test:integration
+    #   node_js: lts
+    #   env:
+    #     - NPM_REGISTRY: 127.0.0.1:80:4567
+    #   before_script:
+    #     - docker pull verdaccio/verdaccio:5.x-next
+    #     - docker run -d -p 127.0.0.1:80:4567:4567 verdaccio/verdaccio:5.x-next
+    #   script:
+    #   - npm run test:integration -- --registry=http://127.0.0.1:4567
+
+    # - <<: *test:integration
+    #   node_js: latest
+      
