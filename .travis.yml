@@ -7,19 +7,25 @@ jobs:
   include:
     - stage: lint
       node_js: latest
+      before_script:
+        - npm install
       script: 
-      - npm run lint
+        - npm run lint
 
     - stage: build
       node_js: latest
+      before_script:
+        - npm install
       script:
       - npm run build
 
     - &test-unit
       stage: test:unit
       node_js: lts
+      before_script:
+        - npm install
       script:
-      - npm run test:unit
+        - npm run test:unit
 
     - <<: *test-unit
       node_js: latest
@@ -32,6 +38,7 @@ jobs:
     #   before_script:
     #     - docker pull verdaccio/verdaccio:5.x-next
     #     - docker run -d -p 127.0.0.1:80:4567:4567 verdaccio/verdaccio:5.x-next
+    #     - npm install
     #   script:
     #   - npm run test:integration -- --registry=http://127.0.0.1:4567
 
