@@ -6,14 +6,14 @@ services:
 jobs:
   include:
     - stage: lint
-      node_js: latest
+      node_js: node
       before_script:
         - npm install
       script: 
         - npm run lint
 
     - stage: build
-      node_js: latest
+      node_js: node
       before_script:
         - npm install
       script:
@@ -28,7 +28,7 @@ jobs:
         - npm run test:unit
 
     - <<: *test-unit
-      node_js: latest
+      node_js: node
 
     # - &test-integration
     #   stage: test:integration
@@ -43,5 +43,5 @@ jobs:
     #   - npm run test:integration -- --registry=http://127.0.0.1:4567
 
     # - <<: *test:integration
-    #   node_js: latest
+    #   node_js: node
       
