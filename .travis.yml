@@ -3,26 +3,23 @@ version: ~> 1.0
 services:
   - docker
 
-node_js: node
+language: node_js
+
+node_js:
+  - node
 
 jobs:
   include:
     - stage: lint
-      before_script:
-        - npm install
       script: 
         - npm run lint
 
     - stage: build
-      before_script:
-        - npm install
       script:
       - npm run build
 
     - &test-unit
       stage: test:unit
-      before_script:
-        - npm install
       script:
         - npm run test:unit
 
