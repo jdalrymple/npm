@@ -379,7 +379,6 @@ describe('verifyNpmAuth', () => {
     const pkgJson = {
       name: 'test-project',
     };
-
     const context = {
       cwd: 'home',
       env,

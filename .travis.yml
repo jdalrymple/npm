@@ -18,25 +18,21 @@ jobs:
       script:
       - npm run build
 
-    - &test-unit
-      stage: test:unit
+    - stage: test:unit
       script:
-        - npm run test:unit
+        - npm run test:unit && yarn codecov
 
-    - <<: *test-unit
-      node_js: lts
+    - stage: test:integration
+      env:
+        - TEST_NPM_REGISTRY=http://localhost:4873
+        - NPM_USERNAME=username
+        - NPM_EMAIL=test@test.com
+        - NPM_PASSWORD=password
+      before_script:
+        - docker pull verdaccio/verdaccio
+        - docker run -d -p 4873:4873 verdaccio/verdaccio
+        - npm install -g npm-cli-login
+        - npm-cli-login -u $NPM_USERNAME -p $NPM_PASSWORD -e $NPM_EMAIL -r $TEST_NPM_REGISTRY
 
-    # - &test-integration
-    #   stage: test:integration
-    #   env:
-    #     - NPM_REGISTRY: 127.0.0.1:80:4567
-    #   before_script:
-    #     - docker pull verdaccio/verdaccio:5.x-next
-    #     - docker run -d -p 127.0.0.1:80:4567:4567 verdaccio/verdaccio:5.x-next
-    #     - npm install
-    #   script:
-    #   - npm run test:integration -- --registry=http://127.0.0.1:4567
-
-    # - <<: *test:integration
-    #   node_js: lts
-      
+      script:
+        - npm run test:integration && yarn codecov

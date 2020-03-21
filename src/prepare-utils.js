@@ -51,7 +51,6 @@ export async function prepareNpm(
   npmrc,
   { cwd, env, stdout, stderr, nextRelease: { version }, logger },
   { pkgRoot, tarballDir } = {},
-  isPrivate = false,
 ) {
   const basePath = pkgRoot ? path.resolve(cwd, pkgRoot) : cwd;
 
@@ -63,7 +62,7 @@ export async function prepareNpm(
     logger,
   });
 
-  if (tarballDir && isPrivate !== true) {
+  if (tarballDir) {
     await createTarball(
       npmrc,
       basePath,

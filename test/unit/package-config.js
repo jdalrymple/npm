@@ -84,6 +84,6 @@ describe('getAllPkgInfo', () => {
 
     expect(rootPkg.name).toEqual(pkg.name);
     expect(rootPkg.version).toEqual(pkg.version);
-    expect(subPkgs).toBeUndefined();
+    expect(subPkgs).toStrictEqual([]);
   });
 });
