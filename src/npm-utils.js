@@ -35,7 +35,7 @@ export async function setAuth(
   );
   let currentConfig = '';
 
-  if (configs) {
+  if (configs.length > 0) {
     logger.log('Reading npm config from %s', configs.join(', '));
 
     currentConfig = await Promise.all(configs.map(c => readFile(c)));
@@ -43,7 +43,7 @@ export async function setAuth(
   }
 
   if (getAuthToken(registry, { npmrc: rcConfig, recursive: true })) {
-    await outputFile(npmrc, currentConfig);
+    await outputFile(npmrc, currentConfig.trim());
   } else if (LEGACY_TOKEN && NPM_EMAIL) {
     await outputFile(npmrc, `${currentConfig}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`);
 
