@@ -7,14 +7,14 @@
   <a href="https://codeclimate.com/github/jdalrymple/semantic-release-npmx">
     <img src="https://codeclimate.com/github/jdalrymple/semantic-release-npmx/badges/gpa.svg" alt="Code Climate maintainability">
   </a>
-  <a href="https://codecov.io/gh/jdalrymple/semantic-release-npx">
-    <img src="https://img.shields.io/codecov/c/github/jdalrymple/semantic-release-npx/master.svg" alt="CodeCov test coverage">
+  <a href="https://codecov.io/gh/jdalrymple/semantic-release-npmx">
+    <img src="https://img.shields.io/codecov/c/github/jdalrymple/semantic-release-npmx/master.svg" alt="CodeCov test coverage">
   </a>
-  <a href="https://david-dm.org/jdalrymple/semantic-release-npx">
-    <img src="https://david-dm.org/jdalrymple/semantic-release-npx/status.svg" alt="Dependency Status" />
+  <a href="https://david-dm.org/jdalrymple/semantic-release-npmx">
+    <img src="https://david-dm.org/jdalrymple/semantic-release-npmx/status.svg" alt="Dependency Status" />
   </a>
-  <a href="https://david-dm.org/jdalrymple/semantic-release-npx?type=dev">
-    <img src="https://david-dm.org/jdalrymple/semantic-release-npx/dev-status.svg.svg" alt="Dev Dependency Status" />
+  <a href="https://david-dm.org/jdalrymple/semantic-release-npmx?type=dev">
+    <img src="https://david-dm.org/jdalrymple/semantic-release-npmx/dev-status.svg.svg" alt="Dev Dependency Status" />
   </a>
   <img src="https://flat.badgen.net/dependabot/jdalrymple/semantic-release-npmx?icon=dependabot" alt="Dependabot Badge" />
 <!--   <a href="https://github.com/semantic-release/semantic-release">
@@ -24,8 +24,8 @@
     <img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen">
   </a>
   <img src="https://img.shields.io/badge/code%20style-prettier-ff69b4.svg" alt="Prettier">
-  <a href="https://packagephobia.now.sh/result?p=semantic-release-npx">
-    <img src="https://packagephobia.now.sh/badge?p=semantic-release-npx" alt="Install Size">
+  <a href="https://packagephobia.now.sh/result?p=semantic-release-npmx">
+    <img src="https://packagephobia.now.sh/badge?p=semantic-release-npmx" alt="Install Size">
   </a>
   <a href="LICENSE.md">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="Licence: MIT">
