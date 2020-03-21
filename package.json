@@ -63,6 +63,7 @@
   "scripts": {
     "build": "rollup -c",
     "test:unit": "jest test/unit",
+    "test:integration": "jest test/integration",
     "lint": "prettier --check '{src,test}/**/*.js' && eslint '{src,test}/**/*/*.js'",
     "lint:fix": "prettier --write '{src,test}/**/*.js' && eslint '{src,test}/**/*/*.js' --fix"
   }

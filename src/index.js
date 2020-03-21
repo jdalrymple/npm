@@ -4,7 +4,7 @@ import { prepareNpm } from './prepare-utils';
 import { publishNpm } from './publish-utils';
 import { verifyNpm } from './verify-utils';
 import { getAllPkgInfo } from './package-config';
-import { summarizeReleasesInfo } from './npm-utils';
+import { summarizeReleasesInfo, getLegacyToken } from './npm-utils';
 
 const npmrc = createFile({ name: '.npmrc' });
 
@@ -13,28 +13,43 @@ export const status = {
   prepared: false,
 };
 
+function modifyContext(context) {
+  const legacyToken = getLegacyToken(context.env);
+  const env = {
+    ...legacyToken,
+    ...context.env,
+  };
+
+  return { ...context, env };
+}
+
 /**
  * If the npm publish plugin is used and has `npmPublish`, `tarballDir` or
  * `pkgRoot` configured, validate them now in order to prevent any release
  * if the configuration is wrong
  */
 export async function verifyConditions(pluginConfig = {}, context = {}) {
-  await verifyNpm(npmrc, context, pluginConfig);
+  const ctx = modifyContext(context);
+
+  await verifyNpm(npmrc, ctx, pluginConfig);
 
   status.verified = true;
 }
 
 export async function prepare(pluginConfig = {}, context = {}) {
-  if (!status.verified) await verifyConditions(context, pluginConfig);
+  const ctx = modifyContext(context);
 
-  const { rootPkg, subPkgs } = await getAllPkgInfo(context, pluginConfig);
+  if (!status.verified) await verifyConditions(pluginConfig, ctx);
+
+  const { rootPkg, subPkgs } = await getAllPkgInfo(ctx, pluginConfig);
 
   // TODO: Adjust this to handle independant versioning
+  // TODO: May have to explicitly default the config properties if any of the properties clash in the future
   await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
-      const config = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
+      const { pkgRoot, ...config } = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
 
-      return prepareNpm(npmrc, { ...context, cwd: p.path }, config, p.private || false);
+      return prepareNpm(npmrc, ctx, { pkgRoot: p.path, ...config }, p.private || false);
     }),
   );
 
@@ -42,15 +57,17 @@ export async function prepare(pluginConfig = {}, context = {}) {
 }
 
 export async function publish(pluginConfig, context) {
-  if (!status.prepared) await prepare(context, pluginConfig);
+  const ctx = modifyContext(context);
 
-  const { rootPkg, subPkgs } = await getAllPkgInfo(context, pluginConfig);
+  if (!status.prepared) await prepare(pluginConfig, ctx);
+
+  const { rootPkg, subPkgs } = await getAllPkgInfo(ctx, pluginConfig);
 
   const releaseInfo = await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
-      const config = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
+      const { pkgRoot, ...config } = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
 
-      return publishNpm(npmrc, { ...context, cwd: p.path }, config, p);
+      return publishNpm(npmrc, ctx, { pkgRoot: p.path, ...config }, p);
     }),
   );
 
@@ -58,15 +75,17 @@ export async function publish(pluginConfig, context) {
 }
 
 export async function addChannel(pluginConfig = {}, context = {}) {
-  if (!status.verified) await verifyConditions(context, pluginConfig);
+  const ctx = modifyContext(context);
 
-  const { rootPkg, subPkgs } = await getAllPkgInfo(context, pluginConfig);
+  if (!status.verified) await verifyConditions(pluginConfig, ctx);
+
+  const { rootPkg, subPkgs } = await getAllPkgInfo(ctx, pluginConfig);
 
   const releaseInfo = await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
-      const config = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
+      const { pkgRoot, ...config } = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
 
-      return addChannelNpm(npmrc, { ...context, cwd: p.path }, config, p);
+      return addChannelNpm(npmrc, ctx, { pkgRoot: p.path, ...config }, p);
     }),
   );
 

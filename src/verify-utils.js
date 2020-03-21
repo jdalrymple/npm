@@ -36,7 +36,7 @@ export async function verifyNpm(npmrc, context, pluginConfig = {}) {
   verifyPluginConfig(pluginConfig);
 
   // Verify JSON for root, and children.
-  const { rootPkg, subPkgs } = verifyPkg(context, pluginConfig);
+  const { rootPkg, subPkgs } = await verifyPkg(context, pluginConfig);
 
   // If any package in this group needs to be published, check npm auth
   if (requiresNpmAuth({ rootPkg, subPkgs }, pluginConfig)) {

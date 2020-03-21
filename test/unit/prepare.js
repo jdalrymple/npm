@@ -1,4 +1,3 @@
-import { prepare, status } from '../../src';
 import { getAllPkgInfo } from '../../src/package-config';
 import { prepareNpm } from '../../src/prepare-utils';
 import { verifyNpm } from '../../src/verify-utils';
@@ -12,8 +11,14 @@ jest.mock('tempy', () => ({
   file: jest.fn(() => 'temp'),
 }));
 
+let prepare;
+let status;
+
 beforeEach(() => {
-  jest.resetModules();
+  jest.isolateModules(() => {
+    // eslint-disable-next-line
+    ({ prepare, status } = require('../../src'));
+  });
 });
 
 describe('prepare', () => {
@@ -33,7 +38,7 @@ describe('prepare', () => {
 
     await prepare();
 
-    expect(verifyNpm).toBeCalledWith('temp', {}, {});
+    expect(verifyNpm).toBeCalledWith('temp', { env: {} }, {});
   });
 
   it('should forward pluginConfig and context to get package and subpackage information', async () => {
@@ -45,7 +50,7 @@ describe('prepare', () => {
       subPkgs: [],
     });
 
-    const context = { fake: 6 };
+    const context = { ctx: 6, env: {} };
     const config = { property: true };
 
     await prepare(config, context);
@@ -66,11 +71,13 @@ describe('prepare', () => {
       ],
     });
 
+    const context = { env: {} };
+
     await prepare();
 
-    expect(prepareNpm).toBeCalledWith('temp', { cwd: 'home/root' }, {}, true);
-    expect(prepareNpm).toBeCalledWith('temp', { cwd: 'home/root/sub1' }, {}, false);
-    expect(prepareNpm).toBeCalledWith('temp', { cwd: 'home/root/sub2' }, {}, true);
+    expect(prepareNpm).toBeCalledWith('temp', context, { pkgRoot: 'home/root' }, true);
+    expect(prepareNpm).toBeCalledWith('temp', context, { pkgRoot: 'home/root/sub1' }, false);
+    expect(prepareNpm).toBeCalledWith('temp', context, { pkgRoot: 'home/root/sub2' }, true);
   });
 
   it('should take default config if package config is unknown', async () => {
@@ -86,40 +93,50 @@ describe('prepare', () => {
       ],
     });
 
-    const context = { ctx: 6 };
+    const context = { ctx: 6, env: {} };
     const basicConfig = { property: true };
     const nestedConfig = { default: { property: false } };
 
     await prepare(basicConfig, context);
 
-    expect(prepareNpm).toBeCalledWith('temp', { ctx: 6, cwd: 'home/root' }, basicConfig, true);
     expect(prepareNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub1' },
-      basicConfig,
+      context,
+      { pkgRoot: 'home/root', ...basicConfig },
+      true,
+    );
+    expect(prepareNpm).toBeCalledWith(
+      'temp',
+      context,
+      { pkgRoot: 'home/root/sub1', ...basicConfig },
       false,
     );
-    expect(prepareNpm).toBeCalledWith('temp', { ctx: 6, cwd: 'home/root/sub2' }, basicConfig, true);
+    expect(prepareNpm).toBeCalledWith(
+      'temp',
+      context,
+      { pkgRoot: 'home/root/sub2', ...basicConfig },
+      true,
+    );
 
     await prepare(nestedConfig, context);
 
     expect(prepareNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root' },
-      nestedConfig.default,
+      context,
+      { pkgRoot: 'home/root', ...nestedConfig.default },
       true,
     );
 
     expect(prepareNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub1' },
-      nestedConfig.default,
+      context,
+      { pkgRoot: 'home/root/sub1', ...nestedConfig.default },
       false,
     );
     expect(prepareNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub2' },
-      nestedConfig.default,
+      context,
+      { pkgRoot: 'home/root/sub2', ...nestedConfig.default },
       true,
     );
   });
@@ -137,22 +154,27 @@ describe('prepare', () => {
       ],
     });
 
-    const context = { ctx: 6 };
+    const context = { ctx: 6, env: {} };
     const config = { sub1: { property: false }, default: { property: true } };
 
     await prepare(config, context);
 
-    expect(prepareNpm).toBeCalledWith('temp', { ctx: 6, cwd: 'home/root' }, config.default, true);
     expect(prepareNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub1' },
-      config.sub1,
+      context,
+      { pkgRoot: 'home/root', ...config.default },
+      true,
+    );
+    expect(prepareNpm).toBeCalledWith(
+      'temp',
+      context,
+      { pkgRoot: 'home/root/sub1', ...config.sub1 },
       false,
     );
     expect(prepareNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub2' },
-      config.default,
+      context,
+      { pkgRoot: 'home/root/sub2', ...config.default },
       true,
     );
   });

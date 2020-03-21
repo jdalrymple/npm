@@ -1,8 +1,10 @@
-import { addChannel, status } from '../../src';
 import { getAllPkgInfo } from '../../src/package-config';
 import { addChannelNpm } from '../../src/channel-utils';
 import { verifyNpm } from '../../src/verify-utils';
 import { summarizeReleasesInfo } from '../../src/npm-utils';
+
+let addChannel;
+let status;
 
 jest.mock('../../src/package-config');
 jest.mock('../../src/verify-utils');
@@ -11,13 +13,17 @@ jest.mock('../../src/channel-utils', () => ({
 }));
 jest.mock('../../src/npm-utils', () => ({
   summarizeReleasesInfo: jest.fn(() => 'info'),
+  getLegacyToken: jest.fn(() => ({})),
 }));
 jest.mock('tempy', () => ({
   file: jest.fn(() => 'temp'),
 }));
 
 beforeEach(() => {
-  jest.resetModules();
+  jest.isolateModules(() => {
+    // eslint-disable-next-line
+    ({ addChannel, status } = require('../../src'));
+  });
 });
 
 describe('addChannel', () => {
@@ -34,7 +40,7 @@ describe('addChannel', () => {
 
     await addChannel();
 
-    expect(verifyNpm).toBeCalledWith('temp', {}, {});
+    expect(verifyNpm).toBeCalledWith('temp', { env: {} }, {});
   });
 
   it('should return the release summary after adding the channel', async () => {
@@ -61,7 +67,7 @@ describe('addChannel', () => {
       subPkgs: [],
     });
 
-    const context = { fake: 6 };
+    const context = { ctx: 6, env: {} };
     const config = { property: true };
 
     await addChannel(config, context);
@@ -82,13 +88,29 @@ describe('addChannel', () => {
       ],
     };
 
+    const context = { env: {} };
     getAllPkgInfo.mockReturnValue(pkgInfo);
 
     await addChannel();
 
-    expect(addChannelNpm).toBeCalledWith('temp', { cwd: 'home/root' }, {}, pkgInfo.rootPkg);
-    expect(addChannelNpm).toBeCalledWith('temp', { cwd: 'home/root/sub1' }, {}, pkgInfo.subPkgs[0]);
-    expect(addChannelNpm).toBeCalledWith('temp', { cwd: 'home/root/sub2' }, {}, pkgInfo.subPkgs[1]);
+    expect(addChannelNpm).toBeCalledWith(
+      'temp',
+      context,
+      { pkgRoot: 'home/root' },
+      pkgInfo.rootPkg,
+    );
+    expect(addChannelNpm).toBeCalledWith(
+      'temp',
+      context,
+      { pkgRoot: 'home/root/sub1' },
+      pkgInfo.subPkgs[0],
+    );
+    expect(addChannelNpm).toBeCalledWith(
+      'temp',
+      context,
+      { pkgRoot: 'home/root/sub2' },
+      pkgInfo.subPkgs[1],
+    );
   });
 
   it('should take default config if package config is unknown', async () => {
@@ -106,7 +128,7 @@ describe('addChannel', () => {
 
     getAllPkgInfo.mockReturnValue(pkgInfo);
 
-    const context = { ctx: 6 };
+    const context = { ctx: 6, env: {} };
     const basicConfig = { property: true };
     const nestedConfig = { default: { property: false } };
 
@@ -114,20 +136,20 @@ describe('addChannel', () => {
 
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root' },
-      basicConfig,
+      context,
+      { pkgRoot: 'home/root', ...basicConfig },
       pkgInfo.rootPkg,
     );
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub1' },
-      basicConfig,
+      context,
+      { pkgRoot: 'home/root/sub1', ...basicConfig },
       pkgInfo.subPkgs[0],
     );
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub2' },
-      basicConfig,
+      context,
+      { pkgRoot: 'home/root/sub2', ...basicConfig },
       pkgInfo.subPkgs[1],
     );
 
@@ -135,21 +157,21 @@ describe('addChannel', () => {
 
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root' },
-      nestedConfig.default,
+      context,
+      { pkgRoot: 'home/root', ...nestedConfig.default },
       pkgInfo.rootPkg,
     );
 
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub1' },
-      nestedConfig.default,
+      context,
+      { pkgRoot: 'home/root/sub1', ...nestedConfig.default },
       pkgInfo.subPkgs[0],
     );
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub2' },
-      nestedConfig.default,
+      context,
+      { pkgRoot: 'home/root/sub2', ...nestedConfig.default },
       pkgInfo.subPkgs[1],
     );
   });
@@ -169,27 +191,27 @@ describe('addChannel', () => {
 
     getAllPkgInfo.mockReturnValue(pkgInfo);
 
-    const context = { ctx: 6 };
+    const context = { ctx: 6, env: {} };
     const config = { sub1: { property: false }, default: { property: true } };
 
     await addChannel(config, context);
 
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root' },
-      config.default,
+      context,
+      { pkgRoot: 'home/root', ...config.default },
       pkgInfo.rootPkg,
     );
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub1' },
-      config.sub1,
+      context,
+      { pkgRoot: 'home/root/sub1', ...config.sub1 },
       pkgInfo.subPkgs[0],
     );
     expect(addChannelNpm).toBeCalledWith(
       'temp',
-      { ctx: 6, cwd: 'home/root/sub2' },
-      config.default,
+      context,
+      { pkgRoot: 'home/root/sub2', ...config.default },
       pkgInfo.subPkgs[1],
     );
   });

@@ -39,7 +39,7 @@ export async function getPkgInfo(cwd) {
 export async function getAllPkgInfo({ cwd }, { pkgRoot } = {}) {
   const rootPath = pkgRoot ? path.resolve(cwd, String(pkgRoot)) : cwd;
   const pkg = await getPkgInfo(rootPath);
-  let subPkgs;
+  let subPkgs = [];
 
   if (pkg.private) {
     const subpkgsConfig = pkg.workspaces || (await getLernaConfig()).packages || [];
@@ -48,7 +48,7 @@ export async function getAllPkgInfo({ cwd }, { pkgRoot } = {}) {
       let paths = await Promise.all(subpkgsConfig.map(g => glob(g, { cwd, onlyFiles: false })));
 
       paths = paths.flat();
-      subPkgs = await Promise.all(paths.map(p => getPkgInfo(p)));
+      subPkgs = await Promise.all(paths.map(p => getPkgInfo(path.resolve(cwd, p))));
     }
   }
 
