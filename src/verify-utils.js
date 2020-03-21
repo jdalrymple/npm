@@ -4,27 +4,13 @@ import { verifyNpmAuth } from './npm-utils';
 
 // If the package is private||!npmPublish and all the children are private||!npmPublish, skip
 export function requiresNpmAuth({ rootPkg, subPkgs }, pluginConfig = {}) {
-  // Check root package.json
-  if (!rootPkg.private) return true;
-
-  // Check chilren package.json
-  for (let i = 0; i < subPkgs.length; i += 1) {
-    if (!subPkgs[i].private) return true;
-  }
-
-  // Check configuration
-  // TODO: Handle configuration for package without default config
-  if (pluginConfig.default) {
-    const config = Object.values(pluginConfig);
-
-    for (let i = 0; i < config.length; i += 1) {
-      if (config[i].npmPublish) return true;
-    }
-  } else {
-    return pluginConfig.npmPublish;
-  }
-
-  return false;
+  // Check package.json for non private packages and configuration
+  return (
+    !rootPkg.private ||
+    subPkgs.some(s => !s.private) ||
+    pluginConfig.npmPublish ||
+    Object.values(pluginConfig).some(c => c.npmPublish)
+  );
 }
 
 /*

@@ -17,23 +17,18 @@ export async function getLernaConfig() {
 }
 
 export async function getPkgInfo(cwd) {
+  let pkg;
+
   try {
-    const pkg = await readPkg({ cwd });
-
-    pkg.path = cwd;
-
-    if (!pkg.private && !pkg.name) {
-      throw getError('ENOPKGNAME');
-    }
-
-    return pkg;
+    pkg = await readPkg({ cwd });
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      throw getError('ENOPKG');
-    } else {
-      throw error;
-    }
+    if (error.code === 'ENOENT') throw getError('ENOPKG');
+    throw error;
   }
+
+  if (!pkg.private && !pkg.name) throw getError('ENOPKGNAME');
+
+  return { ...pkg, path: cwd };
 }
 
 export async function getAllPkgInfo({ cwd }, { pkgRoot } = {}) {

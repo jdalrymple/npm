@@ -33,32 +33,23 @@ export async function setAuth(
     { registry: NPMX_DEFAULT_NPM_REGISTRY },
     { config: NPM_CONFIG_USERCONFIG || path.resolve(cwd, '.npmrc') },
   );
+  let currentConfig = '';
 
-  if (configs) logger.log('Reading npm config from %s', configs.join(', '));
+  if (configs) {
+    logger.log('Reading npm config from %s', configs.join(', '));
 
-  const currentConfig = configs
-    ? (await Promise.all(configs.map(c => readFile(c)))).join('\n')
-    : '';
+    currentConfig = await Promise.all(configs.map(c => readFile(c)));
+    currentConfig = `${currentConfig.join('\n')}\n`;
+  }
 
   if (getAuthToken(registry, { npmrc: rcConfig, recursive: true })) {
     await outputFile(npmrc, currentConfig);
-    return;
-  }
-
-  const currentConfigContent = currentConfig ? `${currentConfig}\n` : '';
-
-  if (LEGACY_TOKEN && NPM_EMAIL) {
-    await outputFile(
-      npmrc,
-      `${currentConfigContent}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`,
-    );
+  } else if (LEGACY_TOKEN && NPM_EMAIL) {
+    await outputFile(npmrc, `${currentConfig}_auth = \${LEGACY_TOKEN}\nemail = \${NPM_EMAIL}`);
 
     logger.log(`Wrote NPM_USERNAME, NPM_PASSWORD and NPM_EMAIL to ${npmrc}`);
   } else if (NPM_TOKEN) {
-    await outputFile(
-      npmrc,
-      `${currentConfigContent}${nerfDart(registry)}:_authToken = \${NPM_TOKEN}`,
-    );
+    await outputFile(npmrc, `${currentConfig}${nerfDart(registry)}:_authToken = \${NPM_TOKEN}`);
 
     logger.log(`Wrote NPM_TOKEN to ${npmrc}`);
   } else {

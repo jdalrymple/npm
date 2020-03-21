@@ -4,8 +4,8 @@
   <a href="https://travis-ci.com/jdalrymple/semantic-release-npmx">
     <img src="https://travis-ci.com/jdalrymple/semantic-release-npmx.svg?branch=master" alt="Travis Pipeline Status">
   </a>
-  <a href="https://codeclimate.com/github/jdalrymple/semantic-release-npx">
-    <img src="https://codeclimate.com/github/jdalrymple/semantic-release-npx/badges/gpa.svg" alt="Code Climate maintainability">
+  <a href="https://codeclimate.com/github/jdalrymple/semantic-release-npmx">
+    <img src="https://codeclimate.com/github/jdalrymple/semantic-release-npmx/badges/gpa.svg" alt="Code Climate maintainability">
   </a>
   <a href="https://codecov.io/gh/jdalrymple/semantic-release-npx">
     <img src="https://img.shields.io/codecov/c/github/jdalrymple/semantic-release-npx/master.svg" alt="CodeCov test coverage">
