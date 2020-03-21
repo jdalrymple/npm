@@ -1,5 +1,5 @@
 import readPkg from 'read-pkg';
-import loadJsonFile from 'load-json-file';
+import { readJson } from 'fs-extra';
 import path from 'path';
 import glob from 'globby';
 import { getError } from './error';
@@ -8,7 +8,7 @@ export async function getLernaConfig() {
   let file;
 
   try {
-    file = await loadJsonFile('lerna.json');
+    file = await readJson('lerna.json');
   } catch (e) {
     file = {};
   }
