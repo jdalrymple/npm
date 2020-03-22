@@ -30,7 +30,7 @@ describe('publishNpm', () => {
     expect(result).toBeFalsy();
   });
 
-  it('should publish channel if not private and npmPublish is true', async () => {
+  it('should publish if not private and npmPublish is true', async () => {
     getRegistry.mockReturnValueOnce('https://custom.npmjs.org/');
     execa.mockReturnValueOnce({
       stdout: new PassThrough(),
@@ -61,8 +61,6 @@ describe('publishNpm', () => {
         'next',
         '--registry',
         'https://custom.npmjs.org/',
-        '--access',
-        'restricted',
       ],
       {
         cwd: 'home',
@@ -75,6 +73,116 @@ describe('publishNpm', () => {
 
     expect(context.logger.log).toHaveBeenCalledWith(
       'Published test-project@1.0.0 to dist-tag @next on https://custom.npmjs.org/',
+    );
+
+    expect(getReleasesInfo).toHaveBeenCalledWith(
+      pkgJson,
+      context,
+      'next',
+      'https://custom.npmjs.org/',
+    );
+  });
+
+  it('should publish scoped package with restricted access', async () => {
+    getRegistry.mockReturnValueOnce('https://custom.npmjs.org/');
+    execa.mockReturnValueOnce({
+      stdout: new PassThrough(),
+      stderr: new PassThrough(),
+    });
+
+    const context = {
+      cwd: 'home',
+      logger: { log: jest.fn() },
+      nextRelease: { version: '1.0.0', channel: 'next' },
+      stdout: new WritableStreamBuffer(),
+      stderr: new WritableStreamBuffer(),
+    };
+    const pkgJson = {
+      name: '@scoped/test-project',
+    };
+
+    await publishNpm('.npmrc', context, {}, pkgJson);
+
+    expect(execa).toHaveBeenCalledWith(
+      'npm',
+      [
+        'publish',
+        'home',
+        '--userconfig',
+        '.npmrc',
+        '--tag',
+        'next',
+        '--registry',
+        'https://custom.npmjs.org/',
+        '--access',
+        'restricted',
+      ],
+      {
+        cwd: 'home',
+      },
+    );
+
+    expect(context.logger.log).toHaveBeenCalledWith(
+      'Publishing @scoped/test-project version 1.0.0 to npm registry on dist-tag next',
+    );
+
+    expect(context.logger.log).toHaveBeenCalledWith(
+      'Published @scoped/test-project@1.0.0 to dist-tag @next on https://custom.npmjs.org/',
+    );
+
+    expect(getReleasesInfo).toHaveBeenCalledWith(
+      pkgJson,
+      context,
+      'next',
+      'https://custom.npmjs.org/',
+    );
+  });
+
+  it('should publish scoped package with default public access', async () => {
+    getRegistry.mockReturnValueOnce('https://custom.npmjs.org/');
+    execa.mockReturnValueOnce({
+      stdout: new PassThrough(),
+      stderr: new PassThrough(),
+    });
+
+    const context = {
+      cwd: 'home',
+      logger: { log: jest.fn() },
+      nextRelease: { version: '1.0.0', channel: 'next' },
+      stdout: new WritableStreamBuffer(),
+      stderr: new WritableStreamBuffer(),
+    };
+    const pkgJson = {
+      name: '@scoped/test-project',
+    };
+
+    await publishNpm('.npmrc', context, { access: 'public' }, pkgJson);
+
+    expect(execa).toHaveBeenCalledWith(
+      'npm',
+      [
+        'publish',
+        'home',
+        '--userconfig',
+        '.npmrc',
+        '--tag',
+        'next',
+        '--registry',
+        'https://custom.npmjs.org/',
+        '--access',
+        'public',
+      ],
+      {
+        cwd: 'home',
+      },
+    );
+
+    expect(context.logger.log).toHaveBeenCalledWith(
+      'Publishing @scoped/test-project version 1.0.0 to npm registry on dist-tag next',
+    );
+
+    expect(context.logger.log).toHaveBeenCalledWith(
+      'Published @scoped/test-project@1.0.0 to dist-tag @next on https://custom.npmjs.org/',
     );
 
     expect(getReleasesInfo).toHaveBeenCalledWith(

@@ -24,27 +24,24 @@ export async function publishNpm(
   const basePath = pkgRoot ? path.resolve(cwd, pkgRoot) : cwd;
   const registry = getRegistry(pkgJson, context);
   const distTag = getChannel(channel);
+  const args = [
+    'publish',
+    basePath,
+    '--userconfig',
+    npmrc,
+    '--tag',
+    distTag,
+    '--registry',
+    registry,
+  ];
+
+  if (pkgJson.name.includes('@')) args.push('--access', access);
 
   logger.log(
     `Publishing ${pkgJson.name} version ${version} to npm registry on dist-tag ${distTag}`,
   );
 
-  const result = execa(
-    'npm',
-    [
-      'publish',
-      basePath,
-      '--userconfig',
-      npmrc,
-      '--tag',
-      distTag,
-      '--registry',
-      registry,
-      '--access',
-      access,
-    ],
-    { cwd, env },
-  );
+  const result = execa('npm', args, { cwd, env });
 
   result.stdout.pipe(stdout, { end: false });
   result.stderr.pipe(stderr, { end: false });
