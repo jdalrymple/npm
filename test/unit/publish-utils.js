@@ -61,6 +61,8 @@ describe('publishNpm', () => {
         'next',
         '--registry',
         'https://custom.npmjs.org/',
+        '--access',
+        'restricted',
       ],
       {
         cwd: 'home',

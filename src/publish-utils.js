@@ -3,7 +3,12 @@ import execa from 'execa';
 import { getChannel } from './channel-utils';
 import { getRegistry, getReleasesInfo } from './npm-utils';
 
-export async function publishNpm(npmrc, context, { npmPublish, pkgRoot }, pkgJson) {
+export async function publishNpm(
+  npmrc,
+  context,
+  { npmPublish, pkgRoot, access = 'restricted' },
+  pkgJson,
+) {
   const { cwd, env, stdout, stderr, nextRelease: { version, channel } = {}, logger } = context;
 
   if (npmPublish === false || pkgJson.private === true) {
@@ -26,7 +31,18 @@ export async function publishNpm(npmrc, context, { npmPublish, pkgRoot }, pkgJso
 
   const result = execa(
     'npm',
-    ['publish', basePath, '--userconfig', npmrc, '--tag', distTag, '--registry', registry],
+    [
+      'publish',
+      basePath,
+      '--userconfig',
+      npmrc,
+      '--tag',
+      distTag,
+      '--registry',
+      registry,
+      '--access',
+      access,
+    ],
     { cwd, env },
   );
 

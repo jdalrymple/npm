@@ -90,6 +90,7 @@ Use either `NPM_TOKEN` for token authentication or `NPM_USERNAME`, `NPM_PASSWORD
 | `npmPublish` | Whether to publish the `npm` package to the registry. If `false` the `package.json` version will still be updated.  | `false` if the `package.json` [private](https://docs.npmjs.com/files/package.json#private) property is `true`, `true` otherwise. |
 | `pkgRoot`    | Directory path to publish.                                                                                          | `.`                                                                                                                              |
 | `tarballDir` | Directory path in which to write the the package tarball. If `false` the tarball is not be kept on the file system. This is relative to the cwd of where semantic-release is called from, even for sub-packages | `false`                                                                                                                          |
+| `access` | The default publish [access](https://docs.npmjs.com/cli/publish) for the package. This only applies to scoped packages | `restricted`                                                                                                                          |
 
 **Note**: The `pkgRoot` directory must contains a `package.json`. The version will be updated only in the `package.json` and `npm-shrinkwrap.json` within the `pkgRoot` directory.
 
@@ -177,5 +178,5 @@ Configuration is pretty much the same, but nested to include configuration for s
 ```
 
 ## TODO
-- [ ] Handle independant versioning. This will probably require modifications to semantic-release itself. The context object is what tracks the nextRelease/Version information and that i calculated internally by SR. Perhaps if
-that functinality was exported as a default plugin?
+- [ ] Handle independant versioning. This will probably require modifications to semantic-release itself. The context object is what tracks the nextRelease/Version information and that i calculated internally by SR. Perhaps if that functinality was exported as a default plugin?
+- [ ] Add tests for scoped publishing, especially for restricted access repositories
