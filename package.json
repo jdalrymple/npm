@@ -2,7 +2,7 @@
   "name": "semantic-release-npmx",
   "description": "semantic-release plugin to publish a npm package that supports monorepos",
   "homepage": "https://github.com/jdalrymple/semantic-release-npmx#readme",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "dependencies": {
     "aggregate-error": "^3.0.1",
     "execa": "^4.0.0",
