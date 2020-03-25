@@ -180,3 +180,4 @@ Configuration is pretty much the same, but nested to include configuration for s
 ## TODO
 - [ ] Handle independant versioning. This will probably require modifications to semantic-release itself. The context object is what tracks the nextRelease/Version information and that i calculated internally by SR. Perhaps if that functinality was exported as a default plugin?
 - [ ] Add tests for scoped publishing, especially for restricted access repositories
+- [ ] Update lerna config with version if exists

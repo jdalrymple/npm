@@ -3,7 +3,7 @@ import { addChannelNpm } from './channel-utils';
 import { prepareNpm } from './prepare-utils';
 import { publishNpm } from './publish-utils';
 import { verifyNpm } from './verify-utils';
-import { getAllPkgInfo } from './package-config';
+import { getAllPkgInfo, getDependancyMap } from './package-config';
 import { summarizeReleasesInfo, getLegacyToken } from './npm-utils';
 
 const npmrc = createFile({ name: '.npmrc' });
@@ -48,8 +48,10 @@ export async function prepare(pluginConfig = {}, context = {}) {
   await Promise.all(
     [rootPkg, ...subPkgs].map(p => {
       const { pkgRoot, ...config } = pluginConfig[p.name] || pluginConfig.default || pluginConfig;
+      const depMap = getDependancyMap(ctx.version, p, subPkgs);
 
-      return prepareNpm(npmrc, ctx, { pkgRoot: p.path, ...config }, p.private || false);
+      // TODO: Refactor to not pullout custom pkgRoot ie. Loop based on dep graph updating as it goes along
+      return prepareNpm(npmrc, ctx, { pkgRoot: p.path, ...config }, p, depMap);
     }),
   );
 

@@ -49,3 +49,17 @@ export async function getAllPkgInfo({ cwd }, { pkgRoot } = {}) {
 
   return { rootPkg: pkg, subPkgs };
 }
+
+export async function getDependencyMap(version, pkg, otherUpdatedPackages) {
+  const deps = {
+    dependancies: {},
+    peerDependancies: {},
+    devDependancies: {},
+  }
+
+  otherUpdatedPackages.forEach(op => {
+    if (info.dependancies[k]) deps.dependancies[k] = version;
+    if (info.peerDependancies[k]) deps.peerDependancies[k] = version;
+    if (info.devDependancies[k]) deps.devDependancies[k] = version;
+  })
+}

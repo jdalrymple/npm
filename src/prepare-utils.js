@@ -20,6 +20,20 @@ async function updatePkgVersion(npmrc, basePath, { env, stdout, stderr, version,
   await versionResult;
 }
 
+// TODO: Modify this to support independant versioning
+async function updatePkgDepencencies(pkg, dependencyMap){
+  logger.log('Updating connected package dependency versions to %s', version);
+
+  const { path, ...info } = pkg;
+
+  await outputJson(path, {
+    ...info,
+    dependencies: { ...info.dependencies, ...dependencyMap.dependencies},
+    peerDependencies: { ...info.peerDependencies, ...dependencyMap.peerDependencies},
+    devDependencies: { ...info.devDependencies, ...dependencyMap.devDependencies}
+  });
+}
+
 async function createTarball(
   npmrc,
   basePath,
@@ -50,7 +64,9 @@ async function createTarball(
 export async function prepareNpm(
   npmrc,
   { cwd, env, stdout, stderr, nextRelease: { version }, logger },
-  { pkgRoot, tarballDir } = {},
+  { pkgRoot, tarballDir, updateConnectedDeps=true } = {},
+  pkg, 
+  depMap = {}
 ) {
   const basePath = pkgRoot ? path.resolve(cwd, pkgRoot) : cwd;
 
@@ -62,6 +78,8 @@ export async function prepareNpm(
     logger,
   });
 
+  if (updateConnectedDeps) await updatePkgDepencencies(version, pkg, depMap);
+  
   if (tarballDir) {
     await createTarball(
       npmrc,
